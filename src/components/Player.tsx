@@ -1,26 +1,18 @@
-import { Vector3 } from "@react-three/fiber";
-import { CapsuleCollider, RigidBody } from "@react-three/rapier";
+import { RigidBody, CapsuleCollider } from "@react-three/rapier";
+import { useRef } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
+import * as THREE from "three";
 
-export interface PlayerProps {
-  position: Vector3;
-  color?: string;
-}
-
-function Player({ position }: PlayerProps) {
+const Player = () => {
   return (
-    <RigidBody
-      colliders={false}
-      mass={1}
-      type="dynamic"
-      position={position}
-      scale={0.4}
-    >
+    <RigidBody colliders={false} mass={1} position={[0, 4, 0]}>
+      <CapsuleCollider args={[0.5, 0.5]} />
       <mesh>
-        <capsuleGeometry />
+        <capsuleGeometry args={[0.5, 1, 8, 16]} />
         <meshStandardMaterial color="blue" />
       </mesh>
     </RigidBody>
   );
-}
+};
 
 export default Player;

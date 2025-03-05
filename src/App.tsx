@@ -3,24 +3,28 @@ import Experience from "./components/Experience";
 
 import "./App.css";
 import { Suspense } from "react";
-import Loader from "./components/Loader";
+import Loader from "./components/UI/Loader";
 import { Physics } from "@react-three/rapier";
 import { Environment } from "@react-three/drei";
+import StartScreen from "./components/UI/StartScreen";
 
 export default function Scene() {
   return (
-    <Canvas
-      resize={{ polyfill: ResizeObserver }}
-      camera={{ position: [0, 1.5, 5] }}
-    >
-      <Suspense fallback={<Loader />}>
-        <gridHelper args={[2000, 2000, 0xff22aa, 0x55ccff]} />
-        {/* <Perf position="top-left" /> */}
-        <Environment preset="city" />
-        <Physics>
-          <Experience />
-        </Physics>
-      </Suspense>
-    </Canvas>
+    <>
+      <Canvas
+        resize={{ polyfill: ResizeObserver }}
+        camera={{ position: [3, 8, 3], near: 0.3, fov: 40 }}
+      >
+        <Suspense fallback={<Loader />}>
+          <gridHelper args={[2000, 2000, 0xff22aa, 0x55ccff]} />
+          {/* <Perf position="top-left" /> */}
+          <Environment preset="city" />
+          <Physics debug>
+            <Experience />
+          </Physics>
+        </Suspense>
+      </Canvas>
+      <StartScreen />
+    </>
   );
 }
