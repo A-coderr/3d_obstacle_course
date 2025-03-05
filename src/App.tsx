@@ -8,6 +8,8 @@ import { Physics } from "@react-three/rapier";
 import { Environment } from "@react-three/drei";
 import StartScreen from "./components/UI/StartScreen";
 
+const HDR_PATH = new URL("./assets/sky_1k.hdr", import.meta.url).href;
+
 export default function Scene() {
   return (
     <>
@@ -18,7 +20,7 @@ export default function Scene() {
         <Suspense fallback={<Loader />}>
           <gridHelper args={[2000, 2000, 0xff22aa, 0x55ccff]} />
           {/* <Perf position="top-left" /> */}
-          <Environment preset="city" />
+          <Environment files={HDR_PATH} background />
           <Physics debug>
             <Experience />
           </Physics>
