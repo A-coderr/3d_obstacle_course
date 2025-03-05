@@ -1,11 +1,12 @@
 import { OrbitControls, OrthographicCamera } from "@react-three/drei";
 import Ground from "./Ground";
 import Level1 from "./Level1";
-import Player from "./Player";
+import PlayerController from "./PlayerController";
 import { useRef } from "react";
+import * as THREE from "three";
 
 export default function Experience() {
-  const shadowCameraRef = useRef();
+  const shadowCameraRef = useRef<THREE.OrthographicCamera | null>(null);
   return (
     <>
       <OrbitControls />
@@ -28,7 +29,7 @@ export default function Experience() {
       </directionalLight>
       <Ground />
       <Level1 />
-      <Player />
+      <PlayerController />
     </>
   );
 }
