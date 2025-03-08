@@ -1,53 +1,67 @@
-import { CapsuleCollider, RigidBody } from "@react-three/rapier";
-import Player from "./Player";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { RigidBody, CapsuleCollider, vec3 } from "@react-three/rapier";
 import { Vector3 } from "three";
-import { useFrame } from "@react-three/fiber";
-import { useKeyboardControls } from "@react-three/drei";
+import Player from "./Player";
 
-const PlayerController = () => {
-  const WALK_SPEED = 6;
-  const RUN_SPEED = 12;
-  const rb = useRef();
-  const container = useRef();
-  const cameraTarget = useRef();
-  const cameraPosition = useRef();
-  const player = useRef();
-  const cameraWorldPosition = useRef(new Vector3());
-  const cameraLookAtWorldPosition = useRef(new Vector3());
-  const cameraLookAt = useRef(new Vector3());
-  const [, get] = useKeyboardControls();
+const PlayerController: React.FC = () => {
+  const rigidBodyRef = useRef<React.ElementRef<typeof RigidBody>>(null);
+  const [isWalking, setIsWalking] = useState(false);
+  const speed = 2; // Adjust speed as needed
 
-  useFrame(({ camera }) => {
-    if (rb.current) {
-      const vel = rb.current.linvel();
-    }
-    cameraPosition.current.getWorldPosition(cameraWorldPosition.current);
-    camera.position.lerp(cameraWorldPosition.current, 0.1);
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "w") {
+        setIsWalking(true);
+      }
+    };
 
-    if (cameraTarget.current) {
-      cameraTarget.current.getWorldPosition(cameraLookAtWorldPosition.current);
-      cameraLookAt.current.lerp(cameraLookAtWorldPosition.current, 0.1);
-      camera.lookAt(cameraLookAt.current);
-    }
-  });
+    const handleKeyUp = (event: KeyboardEvent) => {
+      if (event.key === "w") {
+        setIsWalking(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
+
+  useEffect(() => {
+    const movePlayer = () => {
+      if (!rigidBodyRef.current) return;
+
+      if (isWalking) {
+        const velocity = new Vector3(0, 0, speed); // Move forward
+        rigidBodyRef.current.setLinvel(vec3(velocity), true);
+      } else {
+        rigidBodyRef.current.setLinvel(vec3({ x: 0, y: 0, z: 0 }), true); // Stop movement
+      }
+    };
+
+    const interval = setInterval(movePlayer, 16); // Run every frame (approx 60fps)
+    return () => clearInterval(interval);
+  }, [isWalking]);
+
   return (
     <RigidBody
-      colliders={false}
+      ref={rigidBodyRef}
       type="dynamic"
-      lockRotations
-      position={[0, 3, 0]}
-      ref={rb}
+      position={[0, 1, 0]}
+      colliders={false}
+      mass={1}
+      angularDamping={5} // Prevents unwanted rotation
+      linearDamping={0.5} // Adds slight movement resistance
+      lockRotations={true} // Ensures player doesn't fall over
     >
-      <group ref={container}>
-        <group ref={cameraTarget} position-z={-2}></group>
-        <group ref={cameraPosition} position={[0, 9, 10]}></group>
-        <group ref={player}>
-          <Player />
-        </group>
-      </group>
-
+      {/* Capsule Collider for Player */}
       <CapsuleCollider args={[0.5, 0.5]} />
+
+      {/* Render the Player model and animations */}
+      <Player isWalking={isWalking} />
     </RigidBody>
   );
 };

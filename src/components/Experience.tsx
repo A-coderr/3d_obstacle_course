@@ -6,16 +6,12 @@ import {
 import Ground from "./Ground";
 import Level1 from "./Level1";
 import PlayerController from "./PlayerController";
-import { useRef } from "react";
-import * as THREE from "three";
-import Player from "./Player";
 
 export default function Experience() {
-  const shadowCameraRef = useRef<THREE.OrthographicCamera | null>(null);
   return (
     <>
-      {/* <OrbitControls /> */}
-      <PointerLockControls />
+      <OrbitControls />
+      {/* <PointerLockControls /> */}
       <directionalLight
         intensity={0.65}
         castShadow
@@ -23,19 +19,10 @@ export default function Experience() {
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
         shadow-bias={-0.00005}
-      >
-        {/* <OrthographicCamera
-          left={-22}
-          right={15}
-          top={10}
-          bottom={-20}
-          ref={shadowCameraRef}
-          attach={"shadow-camera"}
-        /> */}
-      </directionalLight>
+      ></directionalLight>
       <Ground />
-      <Level1 />
-      <Player />
+      {/* <Level1 /> */}
+      <PlayerController />
     </>
   );
 }
