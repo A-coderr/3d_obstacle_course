@@ -18,16 +18,19 @@ const PlayerController: React.FC = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [isJumping, setIsJumping] = useState(false);
   const [rotationY, setRotationY] = useState(0);
+  const [isGrounded, setIsGrounded] = useState(true);
 
   const walkSpeed = 2;
   const runSpeed = 5;
+  const jumpForce = 15;
   const rotationSpeed = 0.05;
 
   const keys = useRef<{ [key: string]: boolean }>({
     w: false,
     a: false,
     d: false,
-    Shift: false,
+    shift: false,
+    s: false,
   });
 
   useEffect(() => {
@@ -62,9 +65,15 @@ const PlayerController: React.FC = () => {
     //🔥Checking pressed keys inside useFrame to prevent race conditions
     const walking = keys.current.w;
     const running = walking && keys.current.shift;
+    const jumping = keys.current.s && isGrounded;
 
     setIsWalking(walking);
     setIsRunning(running);
+
+    if (jumping) {
+      setIsJumping(true);
+      setIsGrounded(false);
+    }
 
     if (keys.current.a) {
       setRotationY((prev) => prev + rotationSpeed);
@@ -87,6 +96,20 @@ const PlayerController: React.FC = () => {
       rigidBodyRef.current.setLinvel(vec3(forward), true);
     } else {
       rigidBodyRef.current.setLinvel(vec3({ x: 0, y: 0, z: 0 }), true);
+    }
+
+    if (jumping) {
+      rigidBodyRef.current.applyImpulse(
+        vec3({ x: 0, y: jumpForce, z: 0 }),
+        true
+      );
+    }
+
+    // Check if the player is on the ground
+    const velocity = rigidBodyRef.current.linvel();
+    if (velocity.y === 0) {
+      setIsGrounded(true);
+      setIsJumping(false);
     }
   });
 

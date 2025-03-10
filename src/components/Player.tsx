@@ -31,7 +31,7 @@ const Player: React.FC<PlayerProps> = ({ isWalking, isRunning, isJumping }) => {
   };
 
   const { animations: jumpAnimations } = useGLTF(
-    "/assets/models/player/vegas@jumpup.glb"
+    "/assets/models/player/vegas@jump.glb"
   ) as unknown as {
     animations: THREE.AnimationClip[];
   };
