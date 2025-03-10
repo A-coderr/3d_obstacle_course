@@ -16,6 +16,7 @@ const PlayerController: React.FC = () => {
   const rigidBodyRef = useRef<React.ElementRef<typeof RigidBody>>(null);
   const [isWalking, setIsWalking] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
+  const [isJumping, setIsJumping] = useState(false);
   const [rotationY, setRotationY] = useState(0);
 
   const walkSpeed = 2;
@@ -101,7 +102,11 @@ const PlayerController: React.FC = () => {
       lockRotations={true}
     >
       <CapsuleCollider args={[0.5, 0.5]} />
-      <Player isWalking={isWalking} isRunning={isRunning} />
+      <Player
+        isWalking={isWalking}
+        isRunning={isRunning}
+        isJumping={isJumping}
+      />
     </RigidBody>
   );
 };
