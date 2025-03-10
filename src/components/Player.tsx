@@ -6,9 +6,10 @@ import * as THREE from "three";
 
 interface PlayerProps {
   isWalking: boolean;
+  isRunning: boolean;
 }
 
-const Player: React.FC<PlayerProps> = ({ isWalking }) => {
+const Player: React.FC<PlayerProps> = ({ isWalking, isRunning }) => {
   const { scene, animations } = useGLTF(
     "/assets/models/player/vegas@walk.glb"
   ) as unknown as {
@@ -22,42 +23,54 @@ const Player: React.FC<PlayerProps> = ({ isWalking }) => {
     animations: THREE.AnimationClip[];
   };
 
+  const { animations: runAnimations } = useGLTF(
+    "/assets/models/player/vegas@run.glb"
+  ) as unknown as {
+    animations: THREE.AnimationClip[];
+  };
+
   const mixerRef = useRef<AnimationMixer | null>(null);
-  const actionsRef = useRef<{ idle?: AnimationAction; walk?: AnimationAction }>(
-    {}
-  );
+  const actionsRef = useRef<{
+    idle?: AnimationAction;
+    walk?: AnimationAction;
+    run?: AnimationAction;
+  }>({});
 
   useEffect(() => {
-    if (!animations.length || !idleAnimations.length) return;
+    if (!animations.length || !idleAnimations.length || !runAnimations.length)
+      return;
 
-    // Create a new AnimationMixer for the model
     mixerRef.current = new AnimationMixer(scene);
 
-    // Store animation actions
     actionsRef.current.walk = mixerRef.current.clipAction(animations[0]);
     actionsRef.current.idle = mixerRef.current.clipAction(idleAnimations[0]);
+    actionsRef.current.run = mixerRef.current.clipAction(runAnimations[0]);
 
-    // Ensure animations loop
     actionsRef.current.walk.setLoop(LoopRepeat, Infinity);
     actionsRef.current.idle.setLoop(LoopRepeat, Infinity);
+    actionsRef.current.run.setLoop(LoopRepeat, Infinity);
 
-    // Play idle animation by default
     actionsRef.current.idle.play();
-  }, [animations, idleAnimations, scene]);
+  }, [animations, idleAnimations, runAnimations, scene]);
 
   useEffect(() => {
     if (!mixerRef.current) return;
 
-    if (isWalking) {
+    if (isRunning && isWalking) {
       actionsRef.current.idle?.stop();
+      actionsRef.current.walk?.stop();
+      actionsRef.current.run?.play();
+    } else if (isWalking) {
+      actionsRef.current.idle?.stop();
+      actionsRef.current.run?.stop();
       actionsRef.current.walk?.play();
     } else {
       actionsRef.current.walk?.stop();
+      actionsRef.current.run?.stop();
       actionsRef.current.idle?.play();
     }
-  }, [isWalking]);
+  }, [isWalking, isRunning]);
 
-  // Ensure animations update in the render loop
   useFrame((_, delta) => {
     mixerRef.current?.update(delta);
   });

@@ -4,30 +4,46 @@ import { RigidBody, CapsuleCollider, vec3 } from "@react-three/rapier";
 import { Vector3, Euler, Quaternion } from "three";
 import Player from "./Player";
 
+/**
+ * A player controller component that manages player movement and rotation.
+ * It uses the Keyboard API to listen for key presses and determine the player's movement.
+ * It also uses the RigidBody component from react-three/rapier to apply forces to the player's rigid body.
+ * The component also renders a Player component to display the player mesh.
+ *
+ * @returns {React.Element} A RigidBody component with a CapsuleCollider and a Player component
+ */
 const PlayerController: React.FC = () => {
   const rigidBodyRef = useRef<React.ElementRef<typeof RigidBody>>(null);
   const [isWalking, setIsWalking] = useState(false);
-  const [rotationY, setRotationY] = useState(0); // Track Y rotation
-  const speed = 2;
-  const rotationSpeed = 0.05; // Adjust for smooth turning
+  const [isRunning, setIsRunning] = useState(false);
+  const [rotationY, setRotationY] = useState(0);
 
-  // Track key states
+  const walkSpeed = 2;
+  const runSpeed = 5;
+  const rotationSpeed = 0.05;
+
   const keys = useRef<{ [key: string]: boolean }>({
+    w: false,
     a: false,
     d: false,
+    Shift: false,
   });
 
   useEffect(() => {
+    /**
+     * ✅Handles keydown events. Sets the corresponding key in the keys ref to true.
+     * @param {KeyboardEvent} event - The keydown event.
+     */
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "w") setIsWalking(true);
-      if (event.key === "a") keys.current.a = true;
-      if (event.key === "d") keys.current.d = true;
+      keys.current[event.key.toLowerCase()] = true;
     };
 
+    /**
+     * ✅Handles keyup events. Sets the corresponding key in the keys ref to false.
+     * @param {KeyboardEvent} event - The keyup event.
+     */
     const handleKeyUp = (event: KeyboardEvent) => {
-      if (event.key === "w") setIsWalking(false);
-      if (event.key === "a") keys.current.a = false;
-      if (event.key === "d") keys.current.d = false;
+      keys.current[event.key.toLowerCase()] = false;
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -42,7 +58,13 @@ const PlayerController: React.FC = () => {
   useFrame(() => {
     if (!rigidBodyRef.current) return;
 
-    // Apply rotation based on key input
+    //🔥Checking pressed keys inside useFrame to prevent race conditions
+    const walking = keys.current.w;
+    const running = walking && keys.current.shift;
+
+    setIsWalking(walking);
+    setIsRunning(running);
+
     if (keys.current.a) {
       setRotationY((prev) => prev + rotationSpeed);
     }
@@ -50,15 +72,17 @@ const PlayerController: React.FC = () => {
       setRotationY((prev) => prev - rotationSpeed);
     }
 
-    // Convert Euler rotation to Quaternion and apply it
     const quaternion = new Quaternion().setFromEuler(
       new Euler(0, rotationY, 0)
     );
     rigidBodyRef.current.setRotation(quaternion, true);
 
-    // Move player forward in the rotated direction
+    const movementSpeed = isRunning ? runSpeed : walkSpeed;
+
     if (isWalking) {
-      const forward = new Vector3(0, 0, speed).applyQuaternion(quaternion);
+      const forward = new Vector3(0, 0, movementSpeed).applyQuaternion(
+        quaternion
+      );
       rigidBodyRef.current.setLinvel(vec3(forward), true);
     } else {
       rigidBodyRef.current.setLinvel(vec3({ x: 0, y: 0, z: 0 }), true);
@@ -74,10 +98,10 @@ const PlayerController: React.FC = () => {
       mass={1}
       angularDamping={5}
       linearDamping={0.5}
-      lockRotations={true} // Prevents physics-based rotation
+      lockRotations={true}
     >
       <CapsuleCollider args={[0.5, 0.5]} />
-      <Player isWalking={isWalking} />
+      <Player isWalking={isWalking} isRunning={isRunning} />
     </RigidBody>
   );
 };
