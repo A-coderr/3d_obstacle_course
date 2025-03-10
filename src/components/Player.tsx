@@ -56,7 +56,7 @@ const Player: React.FC<PlayerProps> = ({ isWalking, isRunning }) => {
   useEffect(() => {
     if (!mixerRef.current) return;
 
-    if (isRunning) {
+    if (isRunning && isWalking) {
       actionsRef.current.idle?.stop();
       actionsRef.current.walk?.stop();
       actionsRef.current.run?.play();
