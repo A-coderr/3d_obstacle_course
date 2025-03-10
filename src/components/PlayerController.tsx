@@ -7,14 +7,18 @@ import Player from "./Player";
 const PlayerController: React.FC = () => {
   const rigidBodyRef = useRef<React.ElementRef<typeof RigidBody>>(null);
   const [isWalking, setIsWalking] = useState(false);
-  const [rotationY, setRotationY] = useState(0); // Track Y rotation
-  const speed = 2;
-  const rotationSpeed = 0.05; // Adjust for smooth turning
+  const [isRunning, setIsRunning] = useState(false); // New state for running
+  const [rotationY, setRotationY] = useState(0);
+
+  const walkSpeed = 2;
+  const runSpeed = 5; // Increased speed for running
+  const rotationSpeed = 0.05;
 
   // Track key states
   const keys = useRef<{ [key: string]: boolean }>({
     a: false,
     d: false,
+    Shift: false, // Track shift key for running
   });
 
   useEffect(() => {
@@ -22,12 +26,14 @@ const PlayerController: React.FC = () => {
       if (event.key === "w") setIsWalking(true);
       if (event.key === "a") keys.current.a = true;
       if (event.key === "d") keys.current.d = true;
+      if (event.key === "Shift") setIsRunning(true);
     };
 
     const handleKeyUp = (event: KeyboardEvent) => {
       if (event.key === "w") setIsWalking(false);
       if (event.key === "a") keys.current.a = false;
       if (event.key === "d") keys.current.d = false;
+      if (event.key === "Shift") setIsRunning(false);
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -56,9 +62,14 @@ const PlayerController: React.FC = () => {
     );
     rigidBodyRef.current.setRotation(quaternion, true);
 
+    // Determine speed based on walking or running state
+    const movementSpeed = isRunning ? runSpeed : walkSpeed;
+
     // Move player forward in the rotated direction
     if (isWalking) {
-      const forward = new Vector3(0, 0, speed).applyQuaternion(quaternion);
+      const forward = new Vector3(0, 0, movementSpeed).applyQuaternion(
+        quaternion
+      );
       rigidBodyRef.current.setLinvel(vec3(forward), true);
     } else {
       rigidBodyRef.current.setLinvel(vec3({ x: 0, y: 0, z: 0 }), true);
@@ -74,10 +85,10 @@ const PlayerController: React.FC = () => {
       mass={1}
       angularDamping={5}
       linearDamping={0.5}
-      lockRotations={true} // Prevents physics-based rotation
+      lockRotations={true}
     >
       <CapsuleCollider args={[0.5, 0.5]} />
-      <Player isWalking={isWalking} />
+      <Player isWalking={isWalking} isRunning={isRunning} />
     </RigidBody>
   );
 };
