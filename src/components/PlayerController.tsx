@@ -59,6 +59,16 @@ const PlayerController: React.FC = () => {
     };
   }, []);
 
+  // ✅ Handle ground collision detection
+  const handleCollisionEnter = () => {
+    setIsGrounded(true);
+    setIsJumping(false);
+  };
+
+  const handleCollisionExit = () => {
+    setIsGrounded(false);
+  };
+
   useFrame(() => {
     if (!rigidBodyRef.current) return;
 
@@ -71,8 +81,12 @@ const PlayerController: React.FC = () => {
     setIsRunning(running);
 
     if (jumping) {
+      rigidBodyRef.current.applyImpulse(
+        vec3({ x: 0, y: jumpForce, z: 0 }),
+        true
+      );
       setIsJumping(true);
-      setIsGrounded(false);
+      setIsGrounded(false); // Prevent repeated jumps mid-air
     }
 
     if (keys.current.a) {
@@ -97,20 +111,6 @@ const PlayerController: React.FC = () => {
     } else {
       rigidBodyRef.current.setLinvel(vec3({ x: 0, y: 0, z: 0 }), true);
     }
-
-    if (jumping) {
-      rigidBodyRef.current.applyImpulse(
-        vec3({ x: 0, y: jumpForce, z: 0 }),
-        true
-      );
-    }
-
-    // Check if the player is on the ground
-    const velocity = rigidBodyRef.current.linvel();
-    if (velocity.y === 0) {
-      setIsGrounded(true);
-      setIsJumping(false);
-    }
   });
 
   return (
@@ -121,8 +121,10 @@ const PlayerController: React.FC = () => {
       colliders={false}
       mass={1}
       angularDamping={5}
-      linearDamping={0.5}
+      linearDamping={0}
       lockRotations={true}
+      onCollisionEnter={handleCollisionEnter} // ✅ Detect when touching ground
+      onCollisionExit={handleCollisionExit} // ✅ Detect when leaving ground
     >
       <CapsuleCollider args={[0.5, 0.5]} />
       <Player
