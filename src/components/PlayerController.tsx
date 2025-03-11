@@ -117,6 +117,9 @@ const PlayerController: React.FC = () => {
         quaternion
       );
       rigidBodyRef.current.setLinvel(vec3(forward), true);
+    } else {
+      // Stop movement if not walking or jumping
+      rigidBodyRef.current.setLinvel(vec3({ x: 0, y: velocity.y, z: 0 }), true);
     }
   });
 
