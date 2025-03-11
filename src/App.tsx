@@ -30,7 +30,7 @@ export default function Scene() {
             <gridHelper args={[2000, 2000, 0xff22aa, 0x55ccff]} />
             {/* <Perf position="top-left" /> */}
             <Environment files={HDR_PATH} background />
-            <Physics debug gravity={[0, -30, 0]}>
+            <Physics debug>
               <Experience />
             </Physics>
           </Suspense>

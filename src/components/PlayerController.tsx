@@ -22,7 +22,7 @@ const PlayerController: React.FC = () => {
 
   const walkSpeed = 2;
   const runSpeed = 5;
-  const jumpForce = 15;
+  const jumpForce = 9;
   const rotationSpeed = 0.05;
 
   const keys = useRef<{ [key: string]: boolean }>({
@@ -60,9 +60,15 @@ const PlayerController: React.FC = () => {
   }, []);
 
   // ✅ Handle ground collision detection
-  const handleCollisionEnter = () => {
-    setIsGrounded(true);
-    setIsJumping(false);
+  const handleCollisionEnter = (event: any) => {
+    const otherObjectName = event.other?.colliderObject?.name;
+    console.log("Collided with:", otherObjectName);
+
+    if (otherObjectName === "ground") {
+      console.log("Landed on ground! Resetting jump.");
+      setIsGrounded(true);
+      setIsJumping(false);
+    }
   };
 
   const handleCollisionExit = () => {
@@ -75,12 +81,14 @@ const PlayerController: React.FC = () => {
     //🔥Checking pressed keys inside useFrame to prevent race conditions
     const walking = keys.current.w;
     const running = walking && keys.current.shift;
-    const jumping = keys.current.s && isGrounded;
+    const jumpPressed = keys.current.s;
 
     setIsWalking(walking);
     setIsRunning(running);
 
-    if (jumping) {
+    // 🟢 Apply jump instantly when 'S' is pressed (while grounded)
+    if (jumpPressed && isGrounded) {
+      console.log("Jumping! Applying impulse.");
       rigidBodyRef.current.applyImpulse(
         vec3({ x: 0, y: jumpForce, z: 0 }),
         true
@@ -102,14 +110,13 @@ const PlayerController: React.FC = () => {
     rigidBodyRef.current.setRotation(quaternion, true);
 
     const movementSpeed = isRunning ? runSpeed : walkSpeed;
+    const velocity = rigidBodyRef.current.linvel();
 
-    if (isWalking) {
-      const forward = new Vector3(0, 0, movementSpeed).applyQuaternion(
+    if (isWalking || isJumping) {
+      const forward = new Vector3(0, velocity.y, movementSpeed).applyQuaternion(
         quaternion
       );
       rigidBodyRef.current.setLinvel(vec3(forward), true);
-    } else {
-      rigidBodyRef.current.setLinvel(vec3({ x: 0, y: 0, z: 0 }), true);
     }
   });
 
@@ -118,6 +125,7 @@ const PlayerController: React.FC = () => {
       ref={rigidBodyRef}
       type="dynamic"
       position={[0, 1, 0]}
+      gravityScale={2}
       colliders={false}
       mass={1}
       angularDamping={5}

@@ -1,7 +1,13 @@
 import { useEffect, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { AnimationMixer, Group, AnimationAction, LoopRepeat } from "three";
+import {
+  AnimationMixer,
+  Group,
+  AnimationAction,
+  LoopRepeat,
+  AnimationUtils,
+} from "three";
 import * as THREE from "three";
 
 interface PlayerProps {
@@ -50,10 +56,13 @@ const Player: React.FC<PlayerProps> = ({ isWalking, isRunning, isJumping }) => {
 
     mixerRef.current = new AnimationMixer(scene);
 
+    // Use subclip to extract the jump animation (from frame 15 to 40) as not the entire clip is needed
+    const jumpClip = AnimationUtils.subclip(jumpAnimations[0], "jump", 15, 40);
+
     actionsRef.current.walk = mixerRef.current.clipAction(animations[0]);
     actionsRef.current.idle = mixerRef.current.clipAction(idleAnimations[0]);
     actionsRef.current.run = mixerRef.current.clipAction(runAnimations[0]);
-    actionsRef.current.jump = mixerRef.current.clipAction(jumpAnimations[0]);
+    actionsRef.current.jump = mixerRef.current.clipAction(jumpClip);
 
     actionsRef.current.walk.setLoop(LoopRepeat, Infinity);
     actionsRef.current.idle.setLoop(LoopRepeat, Infinity);
