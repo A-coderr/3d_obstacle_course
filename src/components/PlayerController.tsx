@@ -112,7 +112,13 @@ const PlayerController: React.FC = () => {
     const movementSpeed = isRunning ? runSpeed : walkSpeed;
     const velocity = rigidBodyRef.current.linvel();
 
-    if (isWalking || isJumping) {
+    if (isJumping && !isWalking) {
+      // If jumping, preserve only Y velocity (no forward movement if jumping in place)
+      rigidBodyRef.current.setLinvel(
+        vec3({ x: velocity.x, y: velocity.y, z: velocity.z }),
+        true
+      );
+    } else if (isWalking || isJumping) {
       const forward = new Vector3(0, velocity.y, movementSpeed).applyQuaternion(
         quaternion
       );
