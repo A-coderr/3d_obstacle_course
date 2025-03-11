@@ -57,7 +57,7 @@ const Player: React.FC<PlayerProps> = ({ isWalking, isRunning, isJumping }) => {
     mixerRef.current = new AnimationMixer(scene);
 
     // Use subclip to extract the jump animation (from frame 15 to 40) as not the entire clip is needed
-    const jumpClip = AnimationUtils.subclip(jumpAnimations[0], "jump", 15, 40);
+    const jumpClip = AnimationUtils.subclip(jumpAnimations[0], "jump", 20, 25);
 
     actionsRef.current.walk = mixerRef.current.clipAction(animations[0]);
     actionsRef.current.idle = mixerRef.current.clipAction(idleAnimations[0]);
@@ -75,7 +75,12 @@ const Player: React.FC<PlayerProps> = ({ isWalking, isRunning, isJumping }) => {
   useEffect(() => {
     if (!mixerRef.current) return;
 
-    if (isRunning && isWalking) {
+    if (isJumping) {
+      actionsRef.current.idle?.stop();
+      actionsRef.current.run?.stop();
+      actionsRef.current.walk?.stop();
+      actionsRef.current.jump?.play();
+    } else if (isRunning && isWalking) {
       actionsRef.current.idle?.stop();
       actionsRef.current.walk?.stop();
       actionsRef.current.jump?.stop();
@@ -85,11 +90,6 @@ const Player: React.FC<PlayerProps> = ({ isWalking, isRunning, isJumping }) => {
       actionsRef.current.run?.stop();
       actionsRef.current.jump?.stop();
       actionsRef.current.walk?.play();
-    } else if (isJumping) {
-      actionsRef.current.idle?.stop();
-      actionsRef.current.run?.stop();
-      actionsRef.current.walk?.stop();
-      actionsRef.current.jump?.play();
     } else {
       actionsRef.current.walk?.stop();
       actionsRef.current.run?.stop();

@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
-import { RigidBody, CapsuleCollider, vec3 } from "@react-three/rapier";
+import {
+  RigidBody,
+  CapsuleCollider,
+  vec3,
+  CollisionEnterPayload,
+} from "@react-three/rapier";
 import { Vector3, Euler, Quaternion } from "three";
 import Player from "./Player";
 
@@ -17,12 +22,12 @@ const PlayerController: React.FC = () => {
   const [isWalking, setIsWalking] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [isJumping, setIsJumping] = useState(false);
-  const [rotationY, setRotationY] = useState(0);
   const [isGrounded, setIsGrounded] = useState(true);
+  const [rotationY, setRotationY] = useState(0);
 
   const walkSpeed = 2;
   const runSpeed = 5;
-  const jumpForce = 9;
+  const jumpForce = 15;
   const rotationSpeed = 0.05;
 
   const keys = useRef<{ [key: string]: boolean }>({
@@ -30,7 +35,7 @@ const PlayerController: React.FC = () => {
     a: false,
     d: false,
     shift: false,
-    s: false,
+    space: false,
   });
 
   useEffect(() => {
@@ -39,7 +44,11 @@ const PlayerController: React.FC = () => {
      * @param {KeyboardEvent} event - The keydown event.
      */
     const handleKeyDown = (event: KeyboardEvent) => {
-      keys.current[event.key.toLowerCase()] = true;
+      if (event.key === " ") {
+        keys.current.space = true;
+      } else {
+        keys.current[event.key.toLowerCase()] = true;
+      }
     };
 
     /**
@@ -47,7 +56,11 @@ const PlayerController: React.FC = () => {
      * @param {KeyboardEvent} event - The keyup event.
      */
     const handleKeyUp = (event: KeyboardEvent) => {
-      keys.current[event.key.toLowerCase()] = false;
+      if (event.key === " ") {
+        keys.current.space = false;
+      } else {
+        keys.current[event.key.toLowerCase()] = false;
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -60,12 +73,10 @@ const PlayerController: React.FC = () => {
   }, []);
 
   // ✅ Handle ground collision detection
-  const handleCollisionEnter = (event: any) => {
+  const handleCollisionEnter = (event: CollisionEnterPayload) => {
     const otherObjectName = event.other?.colliderObject?.name;
-    console.log("Collided with:", otherObjectName);
 
     if (otherObjectName === "ground") {
-      console.log("Landed on ground! Resetting jump.");
       setIsGrounded(true);
       setIsJumping(false);
     }
@@ -81,7 +92,7 @@ const PlayerController: React.FC = () => {
     //🔥Checking pressed keys inside useFrame to prevent race conditions
     const walking = keys.current.w;
     const running = walking && keys.current.shift;
-    const jumpPressed = keys.current.s;
+    const jumpPressed = keys.current.space;
 
     setIsWalking(walking);
     setIsRunning(running);
@@ -124,7 +135,7 @@ const PlayerController: React.FC = () => {
       );
       rigidBodyRef.current.setLinvel(vec3(forward), true);
     } else {
-      // Stop movement if not walking or jumping
+      // Stop movement if not walking or jumping (this prevents the player from sliding)
       rigidBodyRef.current.setLinvel(vec3({ x: 0, y: velocity.y, z: 0 }), true);
     }
   });
@@ -133,7 +144,7 @@ const PlayerController: React.FC = () => {
     <RigidBody
       ref={rigidBodyRef}
       type="dynamic"
-      position={[0, 1, 0]}
+      position={[10, 1, 0]}
       gravityScale={2}
       colliders={false}
       mass={1}
