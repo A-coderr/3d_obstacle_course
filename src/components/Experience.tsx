@@ -21,7 +21,7 @@ export default function Experience() {
         shadow-bias={-0.00005}
       ></directionalLight>
       <Ground />
-      {/* <Level1 /> */}
+      <Level1 />
       <PlayerController />
     </>
   );

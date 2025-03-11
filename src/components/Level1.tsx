@@ -9,19 +9,19 @@ const block = new URL(
 const Level1 = () => {
   return (
     <>
-      <RigidBody type="fixed" colliders="trimesh">
+      <RigidBody type="fixed" colliders="trimesh" name="ground">
         <Gltf scale={2} src={block} position={[0, 0, 0]} />
       </RigidBody>
-      <RigidBody type="fixed" colliders="trimesh">
+      <RigidBody type="fixed" colliders="trimesh" name="ground">
         <Gltf scale={2} src={block} position={[2, 0, 0]} />
       </RigidBody>
-      <RigidBody type="fixed" colliders="trimesh">
+      <RigidBody type="fixed" colliders="trimesh" name="ground">
         <Gltf scale={2} src={block} position={[-2, 0, 0]} />
       </RigidBody>
-      <RigidBody type="fixed" colliders="trimesh">
+      <RigidBody type="fixed" colliders="trimesh" name="ground">
         <Gltf scale={2} src={block} position={[0, 0, 2]} />
       </RigidBody>
-      <RigidBody type="fixed" colliders="trimesh">
+      <RigidBody type="fixed" colliders="trimesh" name="ground">
         <Gltf scale={2} src={block} position={[0, 0, -2]} />
       </RigidBody>
     </>
