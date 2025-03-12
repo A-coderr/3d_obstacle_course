@@ -14,9 +14,17 @@ interface PlayerProps {
   isWalking: boolean;
   isRunning: boolean;
   isJumping: boolean;
+  isTurningLeft: boolean;
+  isTurningRight: boolean;
 }
 
-const Player: React.FC<PlayerProps> = ({ isWalking, isRunning, isJumping }) => {
+const Player: React.FC<PlayerProps> = ({
+  isWalking,
+  isRunning,
+  isJumping,
+  isTurningLeft,
+  isTurningRight,
+}) => {
   const { scene, animations } = useGLTF(
     "/assets/models/player/vegas@walk.glb"
   ) as unknown as {
@@ -42,12 +50,26 @@ const Player: React.FC<PlayerProps> = ({ isWalking, isRunning, isJumping }) => {
     animations: THREE.AnimationClip[];
   };
 
+  const { animations: leftTurnAnimations } = useGLTF(
+    "/assets/models/player/vegas@leftturn.glb"
+  ) as unknown as {
+    animations: THREE.AnimationClip[];
+  };
+
+  const { animations: rightTurnAnimations } = useGLTF(
+    "/assets/models/player/vegas@rightturn.glb"
+  ) as unknown as {
+    animations: THREE.AnimationClip[];
+  };
+
   const mixerRef = useRef<AnimationMixer | null>(null);
   const actionsRef = useRef<{
     idle?: AnimationAction;
     walk?: AnimationAction;
     run?: AnimationAction;
     jump?: AnimationAction;
+    leftturn?: AnimationAction;
+    rightturn?: AnimationAction;
   }>({});
 
   useEffect(() => {
@@ -56,21 +78,37 @@ const Player: React.FC<PlayerProps> = ({ isWalking, isRunning, isJumping }) => {
 
     mixerRef.current = new AnimationMixer(scene);
 
-    // Use subclip to extract the jump animation (from frame 15 to 40) as not the entire clip is needed
+    // Use subclip to extract the jump animation as not the entire clip is needed
     const jumpClip = AnimationUtils.subclip(jumpAnimations[0], "jump", 20, 25);
 
     actionsRef.current.walk = mixerRef.current.clipAction(animations[0]);
     actionsRef.current.idle = mixerRef.current.clipAction(idleAnimations[0]);
     actionsRef.current.run = mixerRef.current.clipAction(runAnimations[0]);
     actionsRef.current.jump = mixerRef.current.clipAction(jumpClip);
+    actionsRef.current.leftturn = mixerRef.current
+      .clipAction(leftTurnAnimations[0])
+      .setEffectiveTimeScale(2.0);
+    actionsRef.current.rightturn = mixerRef.current
+      .clipAction(rightTurnAnimations[0])
+      .setEffectiveTimeScale(2.0);
 
     actionsRef.current.walk.setLoop(LoopRepeat, Infinity);
     actionsRef.current.idle.setLoop(LoopRepeat, Infinity);
     actionsRef.current.run.setLoop(LoopRepeat, Infinity);
     actionsRef.current.jump.setLoop(LoopRepeat, Infinity);
+    actionsRef.current.leftturn.setLoop(LoopRepeat, Infinity);
+    actionsRef.current.rightturn.setLoop(LoopRepeat, Infinity);
 
     actionsRef.current.idle.play();
-  }, [animations, idleAnimations, runAnimations, jumpAnimations, scene]);
+  }, [
+    animations,
+    idleAnimations,
+    runAnimations,
+    jumpAnimations,
+    leftTurnAnimations,
+    rightTurnAnimations,
+    scene,
+  ]);
 
   useEffect(() => {
     if (!mixerRef.current) return;
@@ -79,24 +117,46 @@ const Player: React.FC<PlayerProps> = ({ isWalking, isRunning, isJumping }) => {
       actionsRef.current.idle?.stop();
       actionsRef.current.run?.stop();
       actionsRef.current.walk?.stop();
+      actionsRef.current.rightturn?.stop();
+      actionsRef.current.leftturn?.stop();
       actionsRef.current.jump?.play();
     } else if (isRunning && isWalking) {
       actionsRef.current.idle?.stop();
       actionsRef.current.walk?.stop();
       actionsRef.current.jump?.stop();
+      actionsRef.current.rightturn?.stop();
+      actionsRef.current.leftturn?.stop();
       actionsRef.current.run?.play();
     } else if (isWalking) {
       actionsRef.current.idle?.stop();
       actionsRef.current.run?.stop();
       actionsRef.current.jump?.stop();
+      actionsRef.current.rightturn?.stop();
+      actionsRef.current.leftturn?.stop();
       actionsRef.current.walk?.play();
+    } else if (isTurningLeft) {
+      actionsRef.current.idle?.stop();
+      actionsRef.current.run?.stop();
+      actionsRef.current.jump?.stop();
+      actionsRef.current.walk?.stop();
+      actionsRef.current.rightturn?.stop();
+      actionsRef.current.leftturn?.play();
+    } else if (isTurningRight) {
+      actionsRef.current.idle?.stop();
+      actionsRef.current.run?.stop();
+      actionsRef.current.jump?.stop();
+      actionsRef.current.walk?.stop();
+      actionsRef.current.leftturn?.stop();
+      actionsRef.current.rightturn?.play();
     } else {
       actionsRef.current.walk?.stop();
       actionsRef.current.run?.stop();
       actionsRef.current.jump?.stop();
+      actionsRef.current.rightturn?.stop();
+      actionsRef.current.leftturn?.stop();
       actionsRef.current.idle?.play();
     }
-  }, [isWalking, isRunning, isJumping]);
+  }, [isWalking, isRunning, isJumping, isTurningLeft, isTurningRight]);
 
   useFrame((_, delta) => {
     mixerRef.current?.update(delta);
