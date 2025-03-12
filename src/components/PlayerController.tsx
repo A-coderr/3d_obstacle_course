@@ -8,6 +8,8 @@ import {
 } from "@react-three/rapier";
 import { Vector3, Euler, Quaternion } from "three";
 import Player from "./Player";
+import { RootState } from "../store/store";
+import { useSelector } from "react-redux";
 
 /**
  * A player controller component that manages player movement and rotation.
@@ -18,6 +20,9 @@ import Player from "./Player";
  * @returns {React.Element} A RigidBody component with a CapsuleCollider and a Player component
  */
 const PlayerController: React.FC = () => {
+  const isGameStarted = useSelector(
+    (state: RootState) => state.game.isGameStarted
+  );
   const rigidBodyRef = useRef<React.ElementRef<typeof RigidBody>>(null);
   const [isWalking, setIsWalking] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
@@ -39,6 +44,7 @@ const PlayerController: React.FC = () => {
   });
 
   useEffect(() => {
+    if (!isGameStarted) return;
     /**
      * ✅Handles keydown events. Sets the corresponding key in the keys ref to true.
      * @param {KeyboardEvent} event - The keydown event.
@@ -70,7 +76,7 @@ const PlayerController: React.FC = () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, []);
+  }, [isGameStarted]);
 
   // ✅ Handle ground collision detection
   const handleCollisionEnter = (event: CollisionEnterPayload) => {
