@@ -28,6 +28,8 @@ const PlayerController: React.FC = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [isJumping, setIsJumping] = useState(false);
   const [isGrounded, setIsGrounded] = useState(true);
+  const [isTurningLeft, setIsTurningLeft] = useState(false);
+  const [isTurningRight, setIsTurningRight] = useState(false);
   const [rotationY, setRotationY] = useState(0);
 
   const walkSpeed = 2;
@@ -99,9 +101,13 @@ const PlayerController: React.FC = () => {
     const walking = keys.current.w;
     const running = walking && keys.current.shift;
     const jumpPressed = keys.current.space;
+    const turningLeft = keys.current.a;
+    const turningRight = keys.current.d;
 
     setIsWalking(walking);
     setIsRunning(running);
+    setIsTurningLeft(turningLeft);
+    setIsTurningRight(turningRight);
 
     // 🟢 Apply jump instantly when 'S' is pressed (while grounded)
     if (jumpPressed && isGrounded) {
@@ -114,10 +120,10 @@ const PlayerController: React.FC = () => {
       setIsGrounded(false); // Prevent repeated jumps mid-air
     }
 
-    if (keys.current.a) {
+    if (turningLeft) {
       setRotationY((prev) => prev + rotationSpeed);
     }
-    if (keys.current.d) {
+    if (turningRight) {
       setRotationY((prev) => prev - rotationSpeed);
     }
 
@@ -165,6 +171,8 @@ const PlayerController: React.FC = () => {
         isWalking={isWalking}
         isRunning={isRunning}
         isJumping={isJumping}
+        isTurningLeft={isTurningLeft}
+        isTurningRight={isTurningRight}
       />
     </RigidBody>
   );
