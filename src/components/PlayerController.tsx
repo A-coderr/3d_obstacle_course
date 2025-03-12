@@ -156,7 +156,7 @@ const PlayerController: React.FC = () => {
     <RigidBody
       ref={rigidBodyRef}
       type="dynamic"
-      position={[10, 1, 0]}
+      position={[0, 3, 0]}
       gravityScale={2}
       colliders={false}
       mass={1}

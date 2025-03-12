@@ -62,6 +62,12 @@ const Player: React.FC<PlayerProps> = ({
     animations: THREE.AnimationClip[];
   };
 
+  const { animations: runJumpAnimations } = useGLTF(
+    "/assets/models/player/vegas@runjump.glb"
+  ) as unknown as {
+    animations: THREE.AnimationClip[];
+  };
+
   const mixerRef = useRef<AnimationMixer | null>(null);
   const actionsRef = useRef<{
     idle?: AnimationAction;
@@ -70,6 +76,7 @@ const Player: React.FC<PlayerProps> = ({
     jump?: AnimationAction;
     leftturn?: AnimationAction;
     rightturn?: AnimationAction;
+    runjump?: AnimationAction;
   }>({});
 
   useEffect(() => {
@@ -79,18 +86,23 @@ const Player: React.FC<PlayerProps> = ({
     mixerRef.current = new AnimationMixer(scene);
 
     // Use subclip to extract the jump animation as not the entire clip is needed
-    const jumpClip = AnimationUtils.subclip(jumpAnimations[0], "jump", 20, 25);
+    const jumpClip = AnimationUtils.subclip(jumpAnimations[0], "jump", 15, 50);
 
     actionsRef.current.walk = mixerRef.current.clipAction(animations[0]);
     actionsRef.current.idle = mixerRef.current.clipAction(idleAnimations[0]);
     actionsRef.current.run = mixerRef.current.clipAction(runAnimations[0]);
-    actionsRef.current.jump = mixerRef.current.clipAction(jumpClip);
+    actionsRef.current.jump = mixerRef.current
+      .clipAction(jumpClip)
+      .setEffectiveTimeScale(0.5);
     actionsRef.current.leftturn = mixerRef.current
       .clipAction(leftTurnAnimations[0])
       .setEffectiveTimeScale(2.0);
     actionsRef.current.rightturn = mixerRef.current
       .clipAction(rightTurnAnimations[0])
       .setEffectiveTimeScale(2.0);
+    actionsRef.current.runjump = mixerRef.current.clipAction(
+      runJumpAnimations[0]
+    );
 
     actionsRef.current.walk.setLoop(LoopRepeat, Infinity);
     actionsRef.current.idle.setLoop(LoopRepeat, Infinity);
@@ -98,6 +110,7 @@ const Player: React.FC<PlayerProps> = ({
     actionsRef.current.jump.setLoop(LoopRepeat, Infinity);
     actionsRef.current.leftturn.setLoop(LoopRepeat, Infinity);
     actionsRef.current.rightturn.setLoop(LoopRepeat, Infinity);
+    actionsRef.current.runjump.setLoop(LoopRepeat, Infinity);
 
     actionsRef.current.idle.play();
   }, [
@@ -107,18 +120,28 @@ const Player: React.FC<PlayerProps> = ({
     jumpAnimations,
     leftTurnAnimations,
     rightTurnAnimations,
+    runJumpAnimations,
     scene,
   ]);
 
   useEffect(() => {
     if (!mixerRef.current) return;
 
-    if (isJumping) {
+    if (isJumping && isWalking) {
       actionsRef.current.idle?.stop();
       actionsRef.current.run?.stop();
       actionsRef.current.walk?.stop();
       actionsRef.current.rightturn?.stop();
       actionsRef.current.leftturn?.stop();
+      actionsRef.current.jump?.stop();
+      actionsRef.current.runjump?.play();
+    } else if (isJumping) {
+      actionsRef.current.idle?.stop();
+      actionsRef.current.run?.stop();
+      actionsRef.current.walk?.stop();
+      actionsRef.current.rightturn?.stop();
+      actionsRef.current.leftturn?.stop();
+      actionsRef.current.runjump?.stop();
       actionsRef.current.jump?.play();
     } else if (isRunning && isWalking) {
       actionsRef.current.idle?.stop();
@@ -126,6 +149,7 @@ const Player: React.FC<PlayerProps> = ({
       actionsRef.current.jump?.stop();
       actionsRef.current.rightturn?.stop();
       actionsRef.current.leftturn?.stop();
+      actionsRef.current.runjump?.stop();
       actionsRef.current.run?.play();
     } else if (isWalking) {
       actionsRef.current.idle?.stop();
@@ -133,6 +157,7 @@ const Player: React.FC<PlayerProps> = ({
       actionsRef.current.jump?.stop();
       actionsRef.current.rightturn?.stop();
       actionsRef.current.leftturn?.stop();
+      actionsRef.current.runjump?.stop();
       actionsRef.current.walk?.play();
     } else if (isTurningLeft) {
       actionsRef.current.idle?.stop();
@@ -140,6 +165,7 @@ const Player: React.FC<PlayerProps> = ({
       actionsRef.current.jump?.stop();
       actionsRef.current.walk?.stop();
       actionsRef.current.rightturn?.stop();
+      actionsRef.current.runjump?.stop();
       actionsRef.current.leftturn?.play();
     } else if (isTurningRight) {
       actionsRef.current.idle?.stop();
@@ -147,6 +173,7 @@ const Player: React.FC<PlayerProps> = ({
       actionsRef.current.jump?.stop();
       actionsRef.current.walk?.stop();
       actionsRef.current.leftturn?.stop();
+      actionsRef.current.runjump?.stop();
       actionsRef.current.rightturn?.play();
     } else {
       actionsRef.current.walk?.stop();
@@ -154,6 +181,7 @@ const Player: React.FC<PlayerProps> = ({
       actionsRef.current.jump?.stop();
       actionsRef.current.rightturn?.stop();
       actionsRef.current.leftturn?.stop();
+      actionsRef.current.runjump?.stop();
       actionsRef.current.idle?.play();
     }
   }, [isWalking, isRunning, isJumping, isTurningLeft, isTurningRight]);
