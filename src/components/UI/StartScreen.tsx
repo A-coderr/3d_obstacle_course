@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { startGame } from "../../store/gameSlice";
 const StartScreen = () => {
   const [showWelcome, setShowWelcome] = useState<boolean>(true);
+  const dispatch = useDispatch();
   return (
     <>
       {showWelcome && (
@@ -14,7 +17,7 @@ const StartScreen = () => {
 
             <button
               className="bg-[#fa4853] hover:bg-[rgba(250,72,84,0.84)] text-white px-10 py-4 rounded text-4xl font-bold"
-              onClick={() => setShowWelcome(false)}
+              onClick={() => dispatch(startGame()) && setShowWelcome(false)}
             >
               Begin
             </button>
