@@ -10,6 +10,7 @@ import { Vector3, Euler, Quaternion } from "three";
 import Player from "./Player";
 import { RootState } from "../store/store";
 import { useSelector } from "react-redux";
+import { CameraController } from "./CameraController";
 
 /**
  * A player controller component that manages player movement and rotation.
@@ -153,28 +154,31 @@ const PlayerController: React.FC = () => {
   });
 
   return (
-    <RigidBody
-      ref={rigidBodyRef}
-      type="dynamic"
-      position={[0, 3, 0]}
-      gravityScale={2}
-      colliders={false}
-      mass={1}
-      angularDamping={5}
-      linearDamping={0}
-      lockRotations={true}
-      onCollisionEnter={handleCollisionEnter} // ✅ Detect when touching ground
-      onCollisionExit={handleCollisionExit} // ✅ Detect when leaving ground
-    >
-      <CapsuleCollider args={[0.5, 0.5]} />
-      <Player
-        isWalking={isWalking}
-        isRunning={isRunning}
-        isJumping={isJumping}
-        isTurningLeft={isTurningLeft}
-        isTurningRight={isTurningRight}
-      />
-    </RigidBody>
+    <>
+      <CameraController playerRef={rigidBodyRef} />
+      <RigidBody
+        ref={rigidBodyRef}
+        type="dynamic"
+        position={[0, 3, 0]}
+        gravityScale={2}
+        colliders={false}
+        mass={1}
+        angularDamping={5}
+        linearDamping={0}
+        lockRotations={true}
+        onCollisionEnter={handleCollisionEnter} // ✅ Detect when touching ground
+        onCollisionExit={handleCollisionExit} // ✅ Detect when leaving ground
+      >
+        <CapsuleCollider args={[0.5, 0.5]} />
+        <Player
+          isWalking={isWalking}
+          isRunning={isRunning}
+          isJumping={isJumping}
+          isTurningLeft={isTurningLeft}
+          isTurningRight={isTurningRight}
+        />
+      </RigidBody>
+    </>
   );
 };
 
