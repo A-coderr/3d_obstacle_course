@@ -1,8 +1,3 @@
-import {
-  OrbitControls,
-  OrthographicCamera,
-  PointerLockControls,
-} from "@react-three/drei";
 import Ground from "./Ground";
 import Level1 from "./Level1";
 import PlayerController from "./PlayerController";
@@ -10,8 +5,6 @@ import PlayerController from "./PlayerController";
 export default function Experience() {
   return (
     <>
-      <OrbitControls />
-      {/* <PointerLockControls /> */}
       <directionalLight
         intensity={0.65}
         castShadow

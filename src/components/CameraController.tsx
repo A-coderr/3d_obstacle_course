@@ -8,52 +8,54 @@ type CameraControllerProps = {
   playerRef: React.RefObject<RapierRigidBody | null>;
 };
 
+/**
+ * CameraController is a component that manages the camera's position and orientation
+ * relative to a player in a 3D scene. It uses a fixed offset to place the camera
+ * behind the player and ensures the camera follows and looks at the player during
+ * movement. The component relies on the `useFrame` hook to update the camera's
+ * position every frame based on the player's current position and rotation.
+ *
+ * @param {Object} props - The component props.
+ * @param {React.RefObject<RapierRigidBody | null>} props.playerRef - A ref to the player's rigid body,
+ * used to track the player's position and rotation.
+ * @returns {JSX.Element} A PerspectiveCamera component that follows the player.
+ */
+
 export function CameraController({ playerRef }: CameraControllerProps) {
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
+  const offset = new THREE.Vector3(0, 2, -3); //Fixed offset behind the player
 
   useFrame(() => {
     if (!playerRef.current || !cameraRef.current) return;
 
-    // Get player's position and rotation
+    //Gets player's exact position and rotation
     const playerPosition = playerRef.current.translation();
-    const playerRotation = playerRef.current.rotation(); // Quaternion rotation
+    const playerRotation = playerRef.current.rotation();
 
-    // Define offset for third-person perspective (behind the player)
-    const offset = new THREE.Vector3(0, 2, -3);
-
-    // Convert quaternion to Euler angles and apply to camera offset
-    const eulerRotation = new THREE.Euler().setFromQuaternion(
-      new THREE.Quaternion(
-        playerRotation.x,
-        playerRotation.y,
-        playerRotation.z,
-        playerRotation.w
-      ),
-      "YXZ"
+    //Converts quaternion rotation to Euler angles (w represents the amount of rotation around the axis)
+    const quaternion = new THREE.Quaternion(
+      playerRotation.x,
+      playerRotation.y,
+      playerRotation.z,
+      playerRotation.w
     );
 
-    // Rotate offset to stay behind the player
-    const rotatedOffset = offset
-      .clone()
-      .applyEuler(new THREE.Euler(0, eulerRotation.y, 0));
+    //Applies player's rotation to the camera offset to stay behind
+    const rotatedOffset = offset.clone().applyQuaternion(quaternion);
 
-    // Set camera position directly behind the player
-    const targetPosition = new THREE.Vector3(
+    //Instantly updates the camera position
+    cameraRef.current.position.set(
       playerPosition.x + rotatedOffset.x,
       playerPosition.y + rotatedOffset.y,
       playerPosition.z + rotatedOffset.z
     );
 
-    // Instantly match camera position
-    cameraRef.current.position.copy(targetPosition);
-
-    // Ensure camera is always looking at the player's front
-    const lookAtTarget = new THREE.Vector3(
+    //Ensures the camera looks at the player's front
+    cameraRef.current.lookAt(
       playerPosition.x,
-      playerPosition.y + 1, // Slightly above the player for a better view
+      playerPosition.y + 1,
       playerPosition.z
     );
-    cameraRef.current.lookAt(lookAtTarget);
   });
 
   return <PerspectiveCamera ref={cameraRef} makeDefault fov={75} />;
