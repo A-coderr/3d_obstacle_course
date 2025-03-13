@@ -13,7 +13,7 @@ export default function Experience() {
         shadow-mapSize-height={2048}
         shadow-bias={-0.00005}
       ></directionalLight>
-      <Ground />
+      {/* <Ground /> */}
       <Level1 />
       <PlayerController />
     </>

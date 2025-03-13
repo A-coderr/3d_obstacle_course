@@ -9,13 +9,17 @@ import { Environment } from "@react-three/drei";
 import StartScreen from "./components/UI/StartScreen";
 import { useSelector } from "react-redux";
 import { RootState } from "./store/store";
+import GameTimer from "./components/UI/GameTimer";
 
 const HDR_PATH = new URL("./assets/sky_1k.hdr", import.meta.url).href;
 
 function App() {
-  const { isLoading } = useSelector((state: RootState) => state.game);
+  const { isLoading, isGameStarted } = useSelector(
+    (state: RootState) => state.game
+  );
   return (
     <>
+      {!isLoading && <GameTimer isGameStarted={isGameStarted} />}
       <Canvas
         resize={{ polyfill: ResizeObserver }}
         camera={{ position: [3, 8, 3], near: 0.3, fov: 40 }}
