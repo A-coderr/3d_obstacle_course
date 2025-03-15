@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "./store/store";
 import GameTimer from "./components/UI/GameTimer";
 
-const HDR_PATH = new URL("./assets/sky_1k.hdr", import.meta.url).href;
+const HDR_PATH = new URL("./assets/sky.hdr", import.meta.url).href;
 
 function App() {
   const { isLoading, isGameStarted } = useSelector(
