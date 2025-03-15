@@ -50,7 +50,7 @@ const GameTimer: React.FC<GameTimerProps> = ({ isGameStarted }) => {
         )}`;
 
   return (
-    <div className="absolute top-5 left-1/2 -translate-x-1/2 bg-black/70 text-white text-xl font-bold px-5 py-2 rounded-lg z-10 border-2 border-amber-500">
+    <div className="absolute top-5 left-1/2 -translate-x-1/2 bg-black/70 text-white text-xl font-bold px-5 py-2 rounded-lg z-10 border-3 border-[#ad46ff]">
       ⏱ Time {formattedTime}
     </div>
   );

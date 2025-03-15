@@ -20,9 +20,9 @@ const Loader = () => {
   return (
     // Html is used to render DOM elements inside the 3D canvas to avoid R3F errors.
     <Html center style={{ width: "100vw", height: "100vh" }}>
-      <div className="flex flex-col items-center justify-center h-screen w-full bg-[#19153b]">
-        <BeatLoader color="#fa4853" speedMultiplier={0.5} size={60} />
-        <h2 className="mt-10 text-4xl text-[#fa4853]">
+      <div className="flex flex-col items-center justify-center h-screen w-full bg-[#000025]">
+        <BeatLoader color="#ad46ff" speedMultiplier={0.5} size={60} />
+        <h2 className="mt-10 text-4xl text-purple-500">
           {progress.toFixed(0)}%
         </h2>
       </div>
