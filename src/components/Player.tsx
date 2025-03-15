@@ -26,44 +26,44 @@ const Player: React.FC<PlayerProps> = ({
   isTurningRight,
 }) => {
   const { scene, animations } = useGLTF(
-    "/assets/models/player/vegas@walk.glb"
+    "assets/models/player/vegas@walk.glb"
   ) as unknown as {
     scene: Group;
     animations: THREE.AnimationClip[];
   };
 
   const { animations: idleAnimations } = useGLTF(
-    "/assets/models/player/vegas@idle.glb"
+    "assets/models/player/vegas@idle.glb"
   ) as unknown as {
     animations: THREE.AnimationClip[];
   };
 
   const { animations: runAnimations } = useGLTF(
-    "/assets/models/player/vegas@run.glb"
+    "assets/models/player/vegas@run.glb"
   ) as unknown as {
     animations: THREE.AnimationClip[];
   };
 
   const { animations: jumpAnimations } = useGLTF(
-    "/assets/models/player/vegas@jump.glb"
+    "assets/models/player/vegas@jump.glb"
   ) as unknown as {
     animations: THREE.AnimationClip[];
   };
 
   const { animations: leftTurnAnimations } = useGLTF(
-    "/assets/models/player/vegas@leftturn.glb"
+    "assets/models/player/vegas@leftturn.glb"
   ) as unknown as {
     animations: THREE.AnimationClip[];
   };
 
   const { animations: rightTurnAnimations } = useGLTF(
-    "/assets/models/player/vegas@rightturn.glb"
+    "assets/models/player/vegas@rightturn.glb"
   ) as unknown as {
     animations: THREE.AnimationClip[];
   };
 
   const { animations: runJumpAnimations } = useGLTF(
-    "/assets/models/player/vegas@runjump.glb"
+    "assets/models/player/vegas@runjump.glb"
   ) as unknown as {
     animations: THREE.AnimationClip[];
   };

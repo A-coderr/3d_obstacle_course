@@ -6,7 +6,7 @@ import { useGLTF, useAnimations } from "@react-three/drei";
 import * as THREE from "three";
 
 const AvatarModel = () => {
-  const { scene, animations } = useGLTF("/assets/models/player/vegas@wave.glb");
+  const { scene, animations } = useGLTF("assets/models/player/vegas@wave.glb");
   const { actions } = useAnimations(animations, scene);
 
   //Plays the first animation on load
