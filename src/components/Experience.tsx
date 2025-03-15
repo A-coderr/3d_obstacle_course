@@ -1,4 +1,3 @@
-import Ground from "./Ground";
 import Level1 from "./Level1";
 import PlayerController from "./PlayerController";
 
@@ -13,7 +12,6 @@ export default function Experience() {
         shadow-mapSize-height={2048}
         shadow-bias={-0.00005}
       ></directionalLight>
-      {/* <Ground /> */}
       <Level1 />
       <PlayerController />
     </>
