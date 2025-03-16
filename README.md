@@ -14,9 +14,6 @@ This is a 3D obstacle course game called ThreeRun built with React Three Fiber, 
 - ✅Movement (walk, run, jump).
 - ✅Time Tracking.
 
-The model and animations are taken from [Mixamo](https://www.mixamo.com/#/)
-
-
 ## 🛠️Technologies Used
 
 - React Three Fiber (R3F)
@@ -60,5 +57,21 @@ npm run dev
 ## 🎮Playing the Game
 Visit the published game on [Github Pages](https://a-coderr.github.io/obstacle_course_r3f/)
 
+## ⚖️License and Asset Usage
+
+### ***Code License***
+The ***code*** in this repository is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+### ***Mixamo Assets Disclaimer***
+This project contains character models and animations obtained from [Mixamo](https://www.mixamo.com/), which are ***not*** covered under the MIT License.  
+
+Mixamo assets are provided by Adobe under their own terms, which allow use in personal and commercial projects, but ***do not allow redistribution of the raw assets***. By including these assets in the repository, they are provided ***only for demonstration purposes***.  
+
+If you are using or distributing this project, you must:
+1. ***Not redistribute the Mixamo assets separately*** (e.g., selling, repackaging, or hosting them elsewhere).
+2. ***Download your own assets from Mixamo*** if you want to use them in your own projects.
+3. ***Ensure your use complies with Mixamo’s licensing terms***, as outlined by Adobe.
+
+By using this project, you agree to comply with Mixamo’s licensing terms.
 
 🔗 Stay tuned for more updates! 🚀
