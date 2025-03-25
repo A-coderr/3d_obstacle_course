@@ -9,7 +9,7 @@ const AvatarModel = () => {
   const { scene, animations } = useGLTF("assets/models/player/vegas@wave.glb");
   const { actions } = useAnimations(animations, scene);
 
-  //Plays the first animation on load
+  // Plays the first animation on load
   useState(() => {
     if (actions) actions[Object.keys(actions)[0]]?.play();
   });
@@ -24,9 +24,9 @@ const StartScreen = () => {
   return (
     <>
       {showWelcome && (
-        <div className="absolute inset-0 flex flex-row gap-20 items-center justify-center z-50 bg-gradient-to-t from-[#3d006e] via-[#231e52] to-[#19153b]">
+        <div className="absolute inset-0 flex flex-col lg:flex-row gap-8 lg:gap-20 items-center justify-center z-50 bg-gradient-to-t from-[#3d006e] via-[#231e52] to-[#19153b]">
           {/* Left Half: Avatar Model */}
-          <div className="w-1/3 h-screen flex items-center justify-center">
+          <div className="w-full lg:w-1/3 h-80 lg:h-screen flex items-center justify-center hidden lg:block">
             <Canvas
               camera={{ position: [0, 8, 10] }}
               onCreated={({ camera }) => {
@@ -40,14 +40,18 @@ const StartScreen = () => {
           </div>
 
           {/* Right Half: Menu */}
-          <div className="w-1/3 h-screen flex items-center justify-center">
-            <div className="bg-[#000025] text-white py-10 px-2 border-2 border-pink-500 rounded-lg shadow-[0_0_15px_#ff00ff] flex flex-col items-center max-w-2xl w-full select-none">
-              <h1 className="text-5xl custom-title font-bold">ThreeRun</h1>
-              <div className="flex flex-col items-center gap-5 mt-15 w-full">
+          <div className="w-full lg:w-1/3 h-screen flex items-center justify-center px-4">
+            <div className="bg-[#000025] text-white py-10 px-4 border-2 border-pink-500 rounded-lg shadow-[0_0_15px_#ff00ff] flex flex-col items-center max-w-2xl w-full select-none">
+              <h1 className="text-2xl xl:text-5xl lg:text-4xl md:text-3xl custom-title font-bold text-center max-w-full">
+                ThreeRun
+              </h1>
+              <div className="flex flex-col items-center gap-5 mt-8 w-full">
                 {/* Move */}
                 <div className="flex items-center justify-center gap-3 w-full">
                   <div className="w-1/4 text-right">
-                    <h2 className="text-2xl uppercase font-semibold">Move</h2>
+                    <h2 className="text-lg lg:text-2xl uppercase font-semibold">
+                      Move
+                    </h2>
                   </div>
                   <div className="flex flex-col items-center gap-3 w-1/2">
                     <kbd className="min-h-7.5 inline-flex justify-center items-center py-2 px-4 bg-pink-200 border-2 border-pink-500 shadow-[0_0_15px_#ff00ff] font-mono text-xl font-bold text-gray-800 rounded-md">
@@ -66,7 +70,9 @@ const StartScreen = () => {
                 {/* Run */}
                 <div className="flex items-center justify-center gap-3 w-full">
                   <div className="w-1/4 text-right">
-                    <h2 className="text-2xl uppercase font-semibold">Run</h2>
+                    <h2 className="text-lg lg:text-2xl uppercase font-semibold">
+                      Run
+                    </h2>
                   </div>
                   <div className="flex flex-col items-center gap-3 w-1/2">
                     <kbd className="min-h-7.5 inline-flex justify-center items-center py-2 px-4 bg-pink-200 border-2 border-pink-500 shadow-[0_0_15px_#ff00ff] font-mono text-xl font-bold text-gray-800 rounded-md">
@@ -77,7 +83,9 @@ const StartScreen = () => {
                 {/* Jump */}
                 <div className="flex items-center justify-center gap-3 w-full">
                   <div className="w-1/4 text-right">
-                    <h2 className="text-2xl uppercase font-semibold">Jump</h2>
+                    <h2 className="text-lg lg:text-2xl uppercase font-semibold">
+                      Jump
+                    </h2>
                   </div>
                   <div className="flex flex-col items-center gap-3 w-1/2">
                     <kbd className="min-h-7.5 inline-flex justify-center items-center py-2 px-10 bg-pink-200 border-2 border-pink-500 shadow-[0_0_15px_#ff00ff] font-mono text-xl font-bold text-gray-800 rounded-md">
@@ -88,7 +96,7 @@ const StartScreen = () => {
               </div>
 
               <button
-                className="mt-15 px-10 py-4 text-white font-bold uppercase text-2xl bg-black border-2 border-purple-500 rounded-lg shadow-[0_0_15px_#a855f7] hover:shadow-[0_0_25px_#a855f7] transition duration-100"
+                className="mt-8 px-10 py-4 text-white font-bold uppercase text-lg lg:text-2xl bg-black border-2 border-purple-500 rounded-lg shadow-[0_0_15px_#a855f7] hover:shadow-[0_0_25px_#a855f7] transition duration-100"
                 onClick={() => {
                   dispatch(startGame());
                   setShowWelcome(false);
@@ -97,7 +105,7 @@ const StartScreen = () => {
                 Begin
               </button>
 
-              <p className="mt-10 text-center">
+              <p className="mt-6 text-center text-sm lg:text-base">
                 The model and animations are from -{" "}
                 <a
                   href="https://www.mixamo.com"
@@ -107,6 +115,9 @@ const StartScreen = () => {
                 >
                   Mixamo
                 </a>
+              </p>
+              <p className="mt-6 text-center text-sm text-yellow-600">
+                Note: The game is not optimized for mobile use.
               </p>
             </div>
           </div>
