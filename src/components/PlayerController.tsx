@@ -9,8 +9,10 @@ import {
 import { Vector3, Euler, Quaternion } from "three";
 import Player from "./Player";
 import { RootState } from "../store/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { CameraController } from "./CameraController";
+import { endGame } from "../store/gameSlice";
+import EndGameScreen from "./UI/EndGameScreen";
 
 /**
  * A player controller component that manages player movement and rotation.
@@ -24,6 +26,10 @@ const PlayerController: React.FC = () => {
   const isGameStarted = useSelector(
     (state: RootState) => state.game.isGameStarted
   );
+  const isGameFinished = useSelector(
+    (state: RootState) => state.game.isGameFinished
+  );
+  const dispatch = useDispatch();
   const rigidBodyRef = useRef<React.ElementRef<typeof RigidBody>>(null);
   const [isWalking, setIsWalking] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
@@ -103,7 +109,7 @@ const PlayerController: React.FC = () => {
   };
 
   useFrame(() => {
-    if (!rigidBodyRef.current) return;
+    if (!rigidBodyRef.current || isGameFinished) return;
 
     //Checking pressed keys inside useFrame to prevent race conditions
     const walking = keys.current.w;
@@ -157,7 +163,17 @@ const PlayerController: React.FC = () => {
       //Stops movement if not walking or jumping (this prevents the player from sliding)
       rigidBodyRef.current.setLinvel(vec3({ x: 0, y: velocity.y, z: 0 }), true);
     }
+
+    // Check if the player falls below the ground level (Y position less than -10 for example)
+    const playerPosition = rigidBodyRef.current.translation();
+    if (playerPosition.y < -10) {
+      dispatch(endGame()); // Dispatch the action to end the game
+    }
   });
+
+  if (isGameFinished) {
+    return <EndGameScreen />;
+  }
 
   return (
     <>
