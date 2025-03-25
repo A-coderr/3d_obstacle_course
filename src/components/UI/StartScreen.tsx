@@ -1,32 +1,53 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { startGame } from "../../store/gameSlice";
 import { Canvas } from "@react-three/fiber";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import * as THREE from "three";
 
-const AvatarModel = () => {
+const AvatarModel = ({ scale }: { scale: number }) => {
   const { scene, animations } = useGLTF("assets/models/player/vegas@wave.glb");
   const { actions } = useAnimations(animations, scene);
 
-  // Plays the first animation on load
   useState(() => {
     if (actions) actions[Object.keys(actions)[0]]?.play();
   });
 
-  return <primitive object={scene} scale={3.5} position={[0, 2, 0]} />;
+  return <primitive object={scene} scale={scale} position={[0, 2, 0]} />;
 };
 
 const StartScreen = () => {
   const [showWelcome, setShowWelcome] = useState<boolean>(true);
   const dispatch = useDispatch();
+  const canvasContainerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(3.5); // Default scale
+
+  // Calculate the model scale based on container size
+  useEffect(() => {
+    const updateScale = () => {
+      if (canvasContainerRef.current) {
+        const containerWidth = canvasContainerRef.current.clientWidth;
+        const scaleFactor = containerWidth / 150;
+        setScale(Math.max(1, Math.min(scaleFactor, 3.5))); // Scale between 1 and 3.5
+      }
+    };
+
+    window.addEventListener("resize", updateScale);
+    updateScale(); // Initial scale calculation
+    return () => {
+      window.removeEventListener("resize", updateScale);
+    };
+  }, []);
 
   return (
     <>
       {showWelcome && (
         <div className="absolute inset-0 flex flex-col lg:flex-row gap-8 lg:gap-20 items-center justify-center z-50 bg-gradient-to-t from-[#3d006e] via-[#231e52] to-[#19153b]">
           {/* Left Half: Avatar Model */}
-          <div className="w-full lg:w-1/3 h-80 lg:h-screen items-center justify-center hidden lg:block">
+          <div
+            ref={canvasContainerRef}
+            className="w-full lg:w-1/3 h-80 lg:h-screen items-center justify-center hidden lg:block"
+          >
             <Canvas
               camera={{ position: [0, 8, 10] }}
               onCreated={({ camera }) => {
@@ -35,7 +56,7 @@ const StartScreen = () => {
             >
               <ambientLight intensity={0.5} />
               <directionalLight position={[2, 2, 5]} />
-              <AvatarModel />
+              <AvatarModel scale={scale} />
             </Canvas>
           </div>
 
