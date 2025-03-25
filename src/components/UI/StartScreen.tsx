@@ -26,7 +26,7 @@ const StartScreen = () => {
       {showWelcome && (
         <div className="absolute inset-0 flex flex-col lg:flex-row gap-8 lg:gap-20 items-center justify-center z-50 bg-gradient-to-t from-[#3d006e] via-[#231e52] to-[#19153b]">
           {/* Left Half: Avatar Model */}
-          <div className="w-full lg:w-1/3 h-80 lg:h-screen flex items-center justify-center hidden lg:block">
+          <div className="w-full lg:w-1/3 h-80 lg:h-screen items-center justify-center hidden lg:block">
             <Canvas
               camera={{ position: [0, 8, 10] }}
               onCreated={({ camera }) => {
