@@ -10,14 +10,21 @@ import StartScreen from "./components/UI/StartScreen";
 import { useSelector } from "react-redux";
 import { RootState } from "./store/store";
 import GameTimer from "./components/UI/GameTimer";
+import PauseButton from "./components/UI/PauseButton";
+import PauseScreen from "./components/UI/PauseScreen";
 
 const HDR_PATH = new URL("./assets/sky.hdr", import.meta.url).href;
 
 function App() {
   const { isLoading } = useSelector((state: RootState) => state.game);
+  const isGamePaused = useSelector(
+    (state: RootState) => state.game.isGamePaused
+  );
   return (
     <>
       {!isLoading && <GameTimer />}
+      {!isLoading && <PauseButton />}
+      {isGamePaused && <PauseScreen />}
       <Canvas
         resize={{ polyfill: ResizeObserver }}
         camera={{ position: [3, 8, 3], near: 0.3, fov: 40 }}

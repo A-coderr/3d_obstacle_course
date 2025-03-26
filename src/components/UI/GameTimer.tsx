@@ -20,11 +20,14 @@ const GameTimer = () => {
   const isGameFinished = useSelector(
     (state: RootState) => state.game.isGameFinished
   );
+  const isGamePaused = useSelector(
+    (state: RootState) => state.game.isGamePaused
+  );
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | undefined;
 
-    if (isGameStarted && !isGameFinished) {
+    if (isGameStarted && !isGameFinished && !isGamePaused) {
       // Start timer when game starts
       interval = setInterval(() => {
         dispatch(incrementTime()); // Increment time every second
@@ -36,7 +39,7 @@ const GameTimer = () => {
     return () => {
       if (interval) clearInterval(interval); // Clean up the interval when the component unmounts
     };
-  }, [isGameStarted, isGameFinished, dispatch]);
+  }, [isGameStarted, isGameFinished, isGamePaused, dispatch]);
 
   const minutes = Math.floor(time / 60);
   const seconds = time % 60;

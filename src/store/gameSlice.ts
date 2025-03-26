@@ -4,6 +4,7 @@ export interface GameState {
   isLoading: boolean;
   isGameStarted: boolean;
   isGameFinished: boolean;
+  isGamePaused: boolean;
   time: number;
 }
 
@@ -11,6 +12,7 @@ const initialState: GameState = {
   isLoading: true,
   isGameStarted: false,
   isGameFinished: false,
+  isGamePaused: false,
   time: 0,
 };
 
@@ -24,10 +26,12 @@ const gameSlice = createSlice({
     startGame: (state) => {
       state.isGameStarted = true;
       state.isGameFinished = false;
+      state.isGamePaused = false;
     },
     endGame: (state) => {
       state.isGameStarted = false;
       state.isGameFinished = true;
+      state.isGamePaused = false;
     },
     startTimer(state) {
       state.time = 0; // Reset time when the game starts
@@ -37,6 +41,9 @@ const gameSlice = createSlice({
     },
     resetTimer(state) {
       state.time = 0; // Reset time when game ends
+    },
+    pauseGame(state) {
+      state.isGamePaused = !state.isGamePaused; // Toggle pause state
     },
   },
 });
@@ -48,5 +55,6 @@ export const {
   startTimer,
   incrementTime,
   resetTimer,
+  pauseGame,
 } = gameSlice.actions;
 export default gameSlice.reducer;
