@@ -29,6 +29,9 @@ const PlayerController: React.FC = () => {
   const isGameFinished = useSelector(
     (state: RootState) => state.game.isGameFinished
   );
+  const isGamePaused = useSelector(
+    (state: RootState) => state.game.isGamePaused
+  );
   const dispatch = useDispatch();
   const rigidBodyRef = useRef<React.ElementRef<typeof RigidBody>>(null);
   const [isWalking, setIsWalking] = useState(false);
@@ -53,7 +56,7 @@ const PlayerController: React.FC = () => {
   });
 
   useEffect(() => {
-    if (!isGameStarted) return;
+    if (!isGameStarted || isGamePaused) return;
     /**
      * ✅Handles keydown events. Sets the corresponding key in the keys ref to true.
      * @param {KeyboardEvent} event - The keydown event.
@@ -85,7 +88,7 @@ const PlayerController: React.FC = () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [isGameStarted]);
+  }, [isGameStarted, isGamePaused]);
 
   /**
    * ✅Handles collision enter events for the player.

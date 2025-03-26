@@ -41,19 +41,19 @@ const EndGameScreen = () => {
           <p className="text-xl mt-4">Time {formattedTime}</p>
           <div className="flex flex-col items-center gap-5 mt-8 w-full">
             <button
-              className="mt-4 px-10 py-4 text-white font-bold uppercase text-lg lg:text-2xl bg-black border-2 border-purple-500 rounded-lg shadow-[0_0_15px_#a855f7] hover:shadow-[0_0_25px_#a855f7] transition duration-100"
+              className="mt-4 px-10 py-4 text-white font-bold uppercase text-lg lg:text-2xl bg-black border-2 border-purple-500 rounded-lg shadow-[0_0_15px_#a855f7] hover:shadow-[0_0_25px_#a855f7] hover:scale-110 active:scale-100 transition duration-300"
               onClick={handleRestart}
             >
               Restart
             </button>
             <button
-              className="mt-4 px-10 py-4 text-white font-bold uppercase text-lg lg:text-2xl bg-black border-2 border-purple-500 rounded-lg shadow-[0_0_15px_#a855f7] hover:shadow-[0_0_25px_#a855f7] transition duration-100"
+              className="mt-4 px-10 py-4 text-white font-bold uppercase text-lg lg:text-2xl bg-black border-2 border-purple-500 rounded-lg shadow-[0_0_15px_#a855f7] hover:shadow-[0_0_25px_#a855f7] hover:scale-110 active:scale-100 transition duration-300"
               onClick={handleGoToMainMenu}
             >
               Main Menu
             </button>
             <button
-              className="mt-4 px-10 py-4 text-white font-bold uppercase text-lg lg:text-2xl bg-black border-2 border-purple-500 rounded-lg shadow-[0_0_15px_#a855f7] hover:shadow-[0_0_25px_#a855f7] transition duration-100"
+              className="mt-4 px-10 py-4 text-white font-bold uppercase text-lg lg:text-2xl bg-black border-2 border-purple-500 rounded-lg shadow-[0_0_15px_#a855f7] hover:shadow-[0_0_25px_#a855f7] hover:scale-110 active:scale-100 transition duration-300"
               onClick={handleQuit}
             >
               Quit

@@ -43,7 +43,7 @@ const gameSlice = createSlice({
       state.time = 0; // Reset time when game ends
     },
     pauseGame(state) {
-      state.isGamePaused = true;
+      state.isGamePaused = !state.isGamePaused; // Toggle pause state
     },
   },
 });
