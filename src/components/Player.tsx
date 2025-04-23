@@ -79,11 +79,21 @@ const Player: React.FC<PlayerProps> = ({
     runjump?: AnimationAction;
   }>({});
 
+  const currentActionRef = useRef<AnimationAction | null>(null);
+
+  const playAction = (action?: AnimationAction) => {
+    if (!action || currentActionRef.current === action) return;
+
+    currentActionRef.current?.fadeOut(0.2);
+    action.reset().fadeIn(0.2).play();
+    currentActionRef.current = action;
+  };
   useEffect(() => {
     if (!animations.length || !idleAnimations.length || !runAnimations.length)
       return;
 
-    mixerRef.current = new AnimationMixer(scene);
+    const mixer = new AnimationMixer(scene);
+    mixerRef.current = mixer;
 
     // Use subclip to extract the jump animation as not the entire clip is needed
     const jumpClip = AnimationUtils.subclip(jumpAnimations[0], "jump", 15, 50);
@@ -107,7 +117,8 @@ const Player: React.FC<PlayerProps> = ({
     actionsRef.current.walk.setLoop(LoopRepeat, Infinity);
     actionsRef.current.idle.setLoop(LoopRepeat, Infinity);
     actionsRef.current.run.setLoop(LoopRepeat, Infinity);
-    actionsRef.current.jump.setLoop(LoopRepeat, Infinity);
+    actionsRef.current.jump.setLoop(THREE.LoopOnce, 1);
+    actionsRef.current.jump.clampWhenFinished = true;
     actionsRef.current.leftturn.setLoop(LoopRepeat, Infinity);
     actionsRef.current.rightturn.setLoop(LoopRepeat, Infinity);
     actionsRef.current.runjump.setLoop(LoopRepeat, Infinity);
@@ -127,62 +138,23 @@ const Player: React.FC<PlayerProps> = ({
   useEffect(() => {
     if (!mixerRef.current) return;
 
+    const { idle, walk, run, jump, runjump, leftturn, rightturn } =
+      actionsRef.current;
+
     if (isJumping && isWalking) {
-      actionsRef.current.idle?.stop();
-      actionsRef.current.run?.stop();
-      actionsRef.current.walk?.stop();
-      actionsRef.current.rightturn?.stop();
-      actionsRef.current.leftturn?.stop();
-      actionsRef.current.jump?.stop();
-      actionsRef.current.runjump?.play();
+      playAction(runjump);
     } else if (isJumping) {
-      actionsRef.current.idle?.stop();
-      actionsRef.current.run?.stop();
-      actionsRef.current.walk?.stop();
-      actionsRef.current.rightturn?.stop();
-      actionsRef.current.leftturn?.stop();
-      actionsRef.current.runjump?.stop();
-      actionsRef.current.jump?.play();
+      playAction(jump);
     } else if (isRunning && isWalking) {
-      actionsRef.current.idle?.stop();
-      actionsRef.current.walk?.stop();
-      actionsRef.current.jump?.stop();
-      actionsRef.current.rightturn?.stop();
-      actionsRef.current.leftturn?.stop();
-      actionsRef.current.runjump?.stop();
-      actionsRef.current.run?.play();
+      playAction(run);
     } else if (isWalking) {
-      actionsRef.current.idle?.stop();
-      actionsRef.current.run?.stop();
-      actionsRef.current.jump?.stop();
-      actionsRef.current.rightturn?.stop();
-      actionsRef.current.leftturn?.stop();
-      actionsRef.current.runjump?.stop();
-      actionsRef.current.walk?.play();
+      playAction(walk);
     } else if (isTurningLeft) {
-      actionsRef.current.idle?.stop();
-      actionsRef.current.run?.stop();
-      actionsRef.current.jump?.stop();
-      actionsRef.current.walk?.stop();
-      actionsRef.current.rightturn?.stop();
-      actionsRef.current.runjump?.stop();
-      actionsRef.current.leftturn?.play();
+      playAction(leftturn);
     } else if (isTurningRight) {
-      actionsRef.current.idle?.stop();
-      actionsRef.current.run?.stop();
-      actionsRef.current.jump?.stop();
-      actionsRef.current.walk?.stop();
-      actionsRef.current.leftturn?.stop();
-      actionsRef.current.runjump?.stop();
-      actionsRef.current.rightturn?.play();
+      playAction(rightturn);
     } else {
-      actionsRef.current.walk?.stop();
-      actionsRef.current.run?.stop();
-      actionsRef.current.jump?.stop();
-      actionsRef.current.rightturn?.stop();
-      actionsRef.current.leftturn?.stop();
-      actionsRef.current.runjump?.stop();
-      actionsRef.current.idle?.play();
+      playAction(idle);
     }
   }, [isWalking, isRunning, isJumping, isTurningLeft, isTurningRight]);
 
