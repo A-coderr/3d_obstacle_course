@@ -210,6 +210,7 @@ const PlayerController: React.FC = () => {
     <>
       <CameraController playerRef={rigidBodyRef} />
       <RigidBody
+        name="player"
         ref={rigidBodyRef}
         type="dynamic"
         position={[0, 3, 0]}
@@ -222,7 +223,7 @@ const PlayerController: React.FC = () => {
         onCollisionEnter={handleCollisionEnter}
         onCollisionExit={handleCollisionExit}
       >
-        <CapsuleCollider args={[0.5, 0.5]} />
+        <CapsuleCollider name="player" args={[0.5, 0.5]} />
         <Player
           isWalking={isWalking}
           isRunning={isRunning}
