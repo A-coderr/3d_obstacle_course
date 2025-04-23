@@ -12,6 +12,7 @@ import { RootState } from "./store/store";
 import GameTimer from "./components/UI/GameTimer";
 import PauseButton from "./components/UI/PauseButton";
 import PauseScreen from "./components/UI/PauseScreen";
+import ScoreDisplay from "./components/UI/ScoreDisplay";
 
 const HDR_PATH = new URL("./assets/sky.hdr", import.meta.url).href;
 
@@ -22,9 +23,17 @@ function App() {
   );
   return (
     <>
-      {!isLoading && <GameTimer />}
-      {!isLoading && <PauseButton />}
+      {!isLoading && (
+        <>
+          <GameTimer />
+          <PauseButton />
+          <ScoreDisplay />
+          <StartScreen />
+        </>
+      )}
+
       {isGamePaused && <PauseScreen />}
+
       <Canvas
         resize={{ polyfill: ResizeObserver }}
         camera={{ position: [3, 8, 3], near: 0.3, fov: 40 }}
@@ -38,8 +47,6 @@ function App() {
           </Physics>
         </Suspense>
       </Canvas>
-
-      {!isLoading && <StartScreen />}
     </>
   );
 }

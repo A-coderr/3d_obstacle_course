@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface GameState {
   isLoading: boolean;
@@ -6,6 +6,8 @@ export interface GameState {
   isGameFinished: boolean;
   isGamePaused: boolean;
   time: number;
+  collected: string[];
+  score: number;
 }
 
 const initialState: GameState = {
@@ -14,6 +16,8 @@ const initialState: GameState = {
   isGameFinished: false,
   isGamePaused: false,
   time: 0,
+  collected: [],
+  score: 0,
 };
 
 const gameSlice = createSlice({
@@ -45,6 +49,18 @@ const gameSlice = createSlice({
     pauseGame(state) {
       state.isGamePaused = !state.isGamePaused; // Toggle pause state
     },
+    collectItem: (state, action: PayloadAction<string>) => {
+      if (!state.collected.includes(action.payload)) {
+        state.collected.push(action.payload);
+        state.score += 100;
+      }
+    },
+    resetCollectibles: (state) => {
+      state.collected = [];
+    },
+    resetScore: (state) => {
+      state.score = 0;
+    },
   },
 });
 
@@ -56,5 +72,8 @@ export const {
   incrementTime,
   resetTimer,
   pauseGame,
+  collectItem,
+  resetCollectibles,
+  resetScore,
 } = gameSlice.actions;
 export default gameSlice.reducer;

@@ -1,5 +1,6 @@
 import { Gltf } from "@react-three/drei";
 import { RigidBody } from "@react-three/rapier";
+import Collectible from "./Collectible";
 
 const block = new URL(
   "../assets/models/platforms/grass_block.glb",
@@ -24,6 +25,8 @@ const Level1 = () => {
       <RigidBody type="fixed" colliders="trimesh" name="ground">
         <Gltf scale={2} src={block} position={[0, 0, -8]} />
       </RigidBody>
+      <Collectible id="gem1" position={[8, 3, 0]} />
+      <Collectible id="gem2" position={[-8, 3, 0]} />
     </>
   );
 };

@@ -1,6 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import { pauseGame, startGame, resetTimer } from "../../store/gameSlice";
+import {
+  pauseGame,
+  startGame,
+  resetTimer,
+  resetCollectibles,
+  resetScore,
+} from "../../store/gameSlice";
 
 const PauseMenu = () => {
   const dispatch = useDispatch();
@@ -18,6 +24,8 @@ const PauseMenu = () => {
 
   const handleRestart = () => {
     dispatch(resetTimer());
+    dispatch(resetCollectibles());
+    dispatch(resetScore());
     dispatch(startGame());
   };
 

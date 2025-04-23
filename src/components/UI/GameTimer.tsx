@@ -28,16 +28,16 @@ const GameTimer = () => {
     let interval: ReturnType<typeof setInterval> | undefined;
 
     if (isGameStarted && !isGameFinished && !isGamePaused) {
-      // Start timer when game starts
+      //Starts timer when game starts.
       interval = setInterval(() => {
-        dispatch(incrementTime()); // Increment time every second
+        dispatch(incrementTime()); //Increments time every second.
       }, 1000);
     } else if (interval) {
-      clearInterval(interval); // Clear interval when game ends or pauses
+      clearInterval(interval); //Clears interval when game ends or pauses.
     }
 
     return () => {
-      if (interval) clearInterval(interval); // Clean up the interval when the component unmounts
+      if (interval) clearInterval(interval); //Cleans up the interval when the component unmounts.
     };
   }, [isGameStarted, isGameFinished, isGamePaused, dispatch]);
 
@@ -48,7 +48,7 @@ const GameTimer = () => {
   ).padStart(2, "0")}`;
 
   return (
-    <div className="absolute top-5 left-1/2 -translate-x-1/2 bg-black/70 text-white text-xl font-bold px-5 py-2 rounded-lg z-10 border-3 border-[#ad46ff]">
+    <div className="absolute top-5 left-1/2 -translate-x-1/2 bg-black/70 text-white text-xl font-bold px-5 py-2 rounded-lg z-10 border-3 border-[#ad46ff] select-none">
       ⏱ Time {formattedTime}
     </div>
   );
