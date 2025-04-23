@@ -5,6 +5,7 @@ import {
   CapsuleCollider,
   vec3,
   CollisionEnterPayload,
+  CollisionExitPayload,
 } from "@react-three/rapier";
 import { Vector3, Euler, Quaternion } from "three";
 import Player from "./Player";
@@ -41,6 +42,7 @@ const PlayerController: React.FC = () => {
   const [isTurningLeft, setIsTurningLeft] = useState(false);
   const [isTurningRight, setIsTurningRight] = useState(false);
   const [rotationY, setRotationY] = useState(0);
+  const [canJump, setCanJump] = useState(true);
 
   const walkSpeed = 2;
   const runSpeed = 5;
@@ -90,6 +92,24 @@ const PlayerController: React.FC = () => {
     };
   }, [isGameStarted, isGamePaused]);
 
+  useEffect(() => {
+    if (isGamePaused || isGameFinished) {
+      keys.current = {
+        w: false,
+        a: false,
+        d: false,
+        shift: false,
+        space: false,
+      };
+
+      setIsWalking(false);
+      setIsRunning(false);
+      setIsJumping(false);
+      setIsTurningLeft(false);
+      setIsTurningRight(false);
+    }
+  }, [isGamePaused, isGameFinished]);
+
   /**
    * ✅Handles collision enter events for the player.
    * This function is triggered when the player's collider enters
@@ -102,19 +122,28 @@ const PlayerController: React.FC = () => {
     const otherObjectName = event.other?.colliderObject?.name;
 
     if (otherObjectName === "ground") {
-      setIsGrounded(true);
-      setIsJumping(false);
+      if (!isGrounded) {
+        //Set a timeout to reset cooldown after the specified time.
+        setTimeout(() => setCanJump(true), 0.1 * 1000);
+        setIsGrounded(true);
+        setIsJumping(false);
+      }
     }
   };
 
-  const handleCollisionExit = () => {
-    setIsGrounded(false);
+  const handleCollisionExit = (event: CollisionExitPayload) => {
+    const otherObjectName = event.other?.colliderObject?.name;
+
+    //Only handle exit from the ground collision.
+    if (otherObjectName === "ground") {
+      setIsGrounded(false);
+    }
   };
 
   useFrame(() => {
     if (!rigidBodyRef.current || isGameFinished) return;
 
-    //Checking pressed keys inside useFrame to prevent race conditions
+    //Checking pressed keys inside useFrame to prevent race conditions.
     const walking = keys.current.w;
     const running = walking && keys.current.shift;
     const jumpPressed = keys.current.space;
@@ -126,15 +155,14 @@ const PlayerController: React.FC = () => {
     setIsTurningLeft(turningLeft);
     setIsTurningRight(turningRight);
 
-    //Applies jump instantly when 'S' is pressed (while grounded)
-    if (jumpPressed && isGrounded) {
-      console.log("Jumping! Applying impulse.");
+    if (jumpPressed && isGrounded && !isJumping && canJump) {
       rigidBodyRef.current.applyImpulse(
         vec3({ x: 0, y: jumpForce, z: 0 }),
         true
       );
       setIsJumping(true);
-      setIsGrounded(false); //Prevents repeated jumps mid-air
+      setIsGrounded(false); //Prevents repeated jumps mid-air.
+      setCanJump(false); //Prevents jumping again until cooldown is over.
     }
 
     if (turningLeft) {
@@ -163,14 +191,14 @@ const PlayerController: React.FC = () => {
       );
       rigidBodyRef.current.setLinvel(vec3(forward), true);
     } else {
-      //Stops movement if not walking or jumping (this prevents the player from sliding)
+      //Stops movement if not walking or jumping (this prevents the player from sliding).
       rigidBodyRef.current.setLinvel(vec3({ x: 0, y: velocity.y, z: 0 }), true);
     }
 
-    // Check if the player falls below the ground level (Y position less than -10 for example)
+    //Checks if the player falls below the ground level.
     const playerPosition = rigidBodyRef.current.translation();
     if (playerPosition.y < -10) {
-      dispatch(endGame()); // Dispatch the action to end the game
+      dispatch(endGame()); //Dispatch the action to end the game.
     }
   });
 
