@@ -32,7 +32,6 @@ const Collectible: React.FC<CollectibleProps> = ({ id, position }) => {
   });
 
   const handleCollisionEnter = (event: CollisionEnterPayload) => {
-    console.log("Collision Event:", event);
     if (event.other.rigidBodyObject?.name === "player" && !isCollected) {
       dispatch(collectItem(id));
     }

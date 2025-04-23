@@ -223,7 +223,7 @@ const PlayerController: React.FC = () => {
         onCollisionEnter={handleCollisionEnter}
         onCollisionExit={handleCollisionExit}
       >
-        <CapsuleCollider name="player" args={[0.5, 0.5]} />
+        <CapsuleCollider args={[0.5, 0.5]} />
         <Player
           isWalking={isWalking}
           isRunning={isRunning}
