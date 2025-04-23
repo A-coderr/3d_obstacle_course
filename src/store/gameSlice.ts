@@ -7,6 +7,7 @@ export interface GameState {
   isGamePaused: boolean;
   time: number;
   collected: string[];
+  score: number;
 }
 
 const initialState: GameState = {
@@ -16,6 +17,7 @@ const initialState: GameState = {
   isGamePaused: false,
   time: 0,
   collected: [],
+  score: 0,
 };
 
 const gameSlice = createSlice({
@@ -50,10 +52,14 @@ const gameSlice = createSlice({
     collectItem: (state, action: PayloadAction<string>) => {
       if (!state.collected.includes(action.payload)) {
         state.collected.push(action.payload);
+        state.score += 100;
       }
     },
     resetCollectibles: (state) => {
       state.collected = [];
+    },
+    resetScore: (state) => {
+      state.score = 0;
     },
   },
 });
@@ -68,5 +74,6 @@ export const {
   pauseGame,
   collectItem,
   resetCollectibles,
+  resetScore,
 } = gameSlice.actions;
 export default gameSlice.reducer;
