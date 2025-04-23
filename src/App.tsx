@@ -12,6 +12,7 @@ import { RootState } from "./store/store";
 import GameTimer from "./components/UI/GameTimer";
 import PauseButton from "./components/UI/PauseButton";
 import PauseScreen from "./components/UI/PauseScreen";
+import ScoreDisplay from "./components/UI/ScoreDisplay";
 
 const HDR_PATH = new URL("./assets/sky.hdr", import.meta.url).href;
 
@@ -24,6 +25,7 @@ function App() {
     <>
       {!isLoading && <GameTimer />}
       {!isLoading && <PauseButton />}
+      {!isLoading && <ScoreDisplay />}
       {isGamePaused && <PauseScreen />}
       <Canvas
         resize={{ polyfill: ResizeObserver }}
