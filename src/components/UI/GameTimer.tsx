@@ -48,7 +48,7 @@ const GameTimer = () => {
   ).padStart(2, "0")}`;
 
   return (
-    <div className="absolute top-5 left-1/2 -translate-x-1/2 bg-black/70 text-white text-xl font-bold px-5 py-2 rounded-lg z-10 border-3 border-[#ad46ff]">
+    <div className="absolute top-5 left-1/2 -translate-x-1/2 bg-black/70 text-white text-xl font-bold px-5 py-2 rounded-lg z-10 border-3 border-[#ad46ff] select-none">
       ⏱ Time {formattedTime}
     </div>
   );

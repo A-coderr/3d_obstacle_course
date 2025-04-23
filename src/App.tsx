@@ -23,10 +23,17 @@ function App() {
   );
   return (
     <>
-      {!isLoading && <GameTimer />}
-      {!isLoading && <PauseButton />}
-      {!isLoading && <ScoreDisplay />}
+      {!isLoading && (
+        <>
+          <GameTimer />
+          <PauseButton />
+          <ScoreDisplay />
+          <StartScreen />
+        </>
+      )}
+
       {isGamePaused && <PauseScreen />}
+
       <Canvas
         resize={{ polyfill: ResizeObserver }}
         camera={{ position: [3, 8, 3], near: 0.3, fov: 40 }}
@@ -40,8 +47,6 @@ function App() {
           </Physics>
         </Suspense>
       </Canvas>
-
-      {!isLoading && <StartScreen />}
     </>
   );
 }

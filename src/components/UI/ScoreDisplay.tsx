@@ -6,8 +6,8 @@ const ScoreDisplay: React.FC = () => {
   const score = useSelector((state: RootState) => state.game.score);
 
   return (
-    <div className="absolute z-10 top-5 left-5 text-2xl font-bold text-pink-500 bg-black/50 px-4 py-2 rounded-xl">
-      Score: {score}
+    <div className="absolute top-5 left-5 bg-black/70 text-white text-xl font-bold px-5 py-2 rounded-lg z-10 border-3 border-[#00a2ff] shadow-[0_0_15px_#00a2ff] select-none">
+      💎 Score {score}
     </div>
   );
 };
