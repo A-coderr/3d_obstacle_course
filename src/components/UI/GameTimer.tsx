@@ -28,16 +28,16 @@ const GameTimer = () => {
     let interval: ReturnType<typeof setInterval> | undefined;
 
     if (isGameStarted && !isGameFinished && !isGamePaused) {
-      // Start timer when game starts
+      //Starts timer when game starts.
       interval = setInterval(() => {
-        dispatch(incrementTime()); // Increment time every second
+        dispatch(incrementTime()); //Increments time every second.
       }, 1000);
     } else if (interval) {
-      clearInterval(interval); // Clear interval when game ends or pauses
+      clearInterval(interval); //Clears interval when game ends or pauses.
     }
 
     return () => {
-      if (interval) clearInterval(interval); // Clean up the interval when the component unmounts
+      if (interval) clearInterval(interval); //Cleans up the interval when the component unmounts.
     };
   }, [isGameStarted, isGameFinished, isGamePaused, dispatch]);
 
