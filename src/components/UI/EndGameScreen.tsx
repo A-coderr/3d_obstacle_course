@@ -1,5 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
-import { startGame, resetTimer } from "../../store/gameSlice";
+import {
+  startGame,
+  resetTimer,
+  resetCollectibles,
+  resetScore,
+} from "../../store/gameSlice";
 import { Html } from "@react-three/drei";
 import { RootState } from "../../store/store";
 
@@ -15,7 +20,9 @@ const EndGameScreen = () => {
   ).padStart(2, "0")}`;
 
   const handleRestart = () => {
-    dispatch(resetTimer()); // Reset timer when restarting
+    dispatch(resetTimer()); //Resets timer when restarting
+    dispatch(resetCollectibles()); //Resets collectibles when restarting
+    dispatch(resetScore()); //Resets score when restarting
     dispatch(startGame());
   };
 
