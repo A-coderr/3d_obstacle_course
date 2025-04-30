@@ -129,6 +129,10 @@ const PlayerController: React.FC = () => {
         setIsJumping(false);
       }
     }
+    // ✅ Finish platform detection
+    if (otherObjectName === "finish") {
+      dispatch(endGame());
+    }
   };
 
   const handleCollisionExit = (event: CollisionExitPayload) => {
