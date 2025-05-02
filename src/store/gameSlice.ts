@@ -4,6 +4,7 @@ export interface GameState {
   isLoading: boolean;
   isGameStarted: boolean;
   isGameFinished: boolean;
+  endReason: "win" | "lose" | null; // "win" | "lose" | null
   isGamePaused: boolean;
   time: number;
   collected: string[];
@@ -14,6 +15,7 @@ const initialState: GameState = {
   isLoading: true,
   isGameStarted: false,
   isGameFinished: false,
+  endReason: null,
   isGamePaused: false,
   time: 0,
   collected: [],
@@ -31,11 +33,13 @@ const gameSlice = createSlice({
       state.isGameStarted = true;
       state.isGameFinished = false;
       state.isGamePaused = false;
+      state.endReason = null;
     },
-    endGame: (state) => {
+    endGame: (state, action: PayloadAction<"win" | "lose">) => {
       state.isGameStarted = false;
       state.isGameFinished = true;
       state.isGamePaused = false;
+      state.endReason = action.payload;
     },
     startTimer(state) {
       state.time = 0; // Reset time when the game starts

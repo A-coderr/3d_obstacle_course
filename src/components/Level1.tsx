@@ -7,6 +7,11 @@ const block = new URL(
   import.meta.url
 ).href;
 
+const finish = new URL(
+  "../assets/models/platforms/finish_block.glb",
+  import.meta.url
+).href;
+
 const Level1 = () => {
   return (
     <>
@@ -24,6 +29,9 @@ const Level1 = () => {
       </RigidBody>
       <RigidBody type="fixed" colliders="trimesh" name="ground">
         <Gltf scale={2} src={block} position={[0, 0, -8]} />
+      </RigidBody>
+      <RigidBody type="fixed" colliders="trimesh" name="finish">
+        <Gltf scale={2} src={finish} position={[0, 0, -16]} />
       </RigidBody>
       <Collectible id="gem1" position={[8, 3, 0]} />
       <Collectible id="gem2" position={[-8, 3, 0]} />

@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { CameraController } from "./CameraController";
 import { endGame } from "../store/gameSlice";
 import EndGameScreen from "./UI/EndGameScreen";
+import FinishScreen from "./UI/FinishScreen";
 
 /**
  * A player controller component that manages player movement and rotation.
@@ -33,6 +34,7 @@ const PlayerController: React.FC = () => {
   const isGamePaused = useSelector(
     (state: RootState) => state.game.isGamePaused
   );
+  const endReason = useSelector((state: RootState) => state.game.endReason);
   const dispatch = useDispatch();
   const rigidBodyRef = useRef<React.ElementRef<typeof RigidBody>>(null);
   const [isWalking, setIsWalking] = useState(false);
@@ -129,6 +131,10 @@ const PlayerController: React.FC = () => {
         setIsJumping(false);
       }
     }
+    // ✅ Finish platform detection
+    if (otherObjectName === "finish") {
+      dispatch(endGame("win"));
+    }
   };
 
   const handleCollisionExit = (event: CollisionExitPayload) => {
@@ -198,12 +204,15 @@ const PlayerController: React.FC = () => {
     //Checks if the player falls below the ground level.
     const playerPosition = rigidBodyRef.current.translation();
     if (playerPosition.y < -10) {
-      dispatch(endGame()); //Dispatch the action to end the game.
+      dispatch(endGame("lose")); //Dispatch the action to end the game.
     }
   });
 
   if (isGameFinished) {
-    return <EndGameScreen />;
+    if (endReason === "win") {
+      return <FinishScreen />; // Create this component
+    }
+    return <EndGameScreen />; // Keep your existing "lose" screen
   }
 
   return (

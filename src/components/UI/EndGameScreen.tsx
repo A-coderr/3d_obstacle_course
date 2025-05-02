@@ -12,6 +12,7 @@ const EndGameScreen = () => {
   const dispatch = useDispatch();
 
   const time = useSelector((state: RootState) => state.game.time);
+  const score = useSelector((state: RootState) => state.game.score);
 
   const minutes = Math.floor(time / 60);
   const seconds = time % 60;
@@ -38,29 +39,29 @@ const EndGameScreen = () => {
 
   return (
     <Html center style={{ width: "100vw", height: "100vh" }}>
-      {/* Blue overlay covering the entire screen */}
-      <div className="absolute inset-0 flex flex-col lg:flex-row gap-8 lg:gap-20 items-center justify-center z-50 bg-gradient-to-t from-[#3d006e] via-[#231e52] to-[#19153b]">
-        {/* Menu container */}
-        <div className="bg-[#000025] text-white py-10 px-6 border-2 border-pink-500 rounded-lg shadow-[0_0_15px_#ff00ff] flex flex-col items-center max-w-2xl w-full select-none">
-          <h1 className="text-2xl xl:text-5xl lg:text-4xl md:text-3xl custom-title font-bold text-center max-w-full">
+      {/* Elegant dark gradient */}
+      <div className="absolute inset-0 flex flex-col lg:flex-row gap-8 lg:gap-20 items-center justify-center z-50 bg-gradient-to-br from-[#1b1b2f] via-[#1f2a48] to-[#191b2e]">
+        <div className="bg-[#101020] text-white py-10 px-6 border-2 border-rose-500 rounded-lg shadow-[0_0_15px_#f43f5e] flex flex-col items-center max-w-2xl w-full select-none">
+          <h1 className="text-2xl custom-title xl:text-5xl lg:text-4xl md:text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-pink-400 to-purple-400">
             Game Over
           </h1>
-          <p className="text-xl mt-4">Time {formattedTime}</p>
-          <div className="flex flex-col items-center gap-5 mt-8 w-full">
+          <p className="text-xl mt-6">⏱️ Time: {formattedTime}</p>
+          <p className="text-xl">💎 Score: {score}</p>
+          <div className="flex flex-col items-center gap-5 mt-6 w-full">
             <button
-              className="mt-4 px-10 py-4 text-white font-bold uppercase text-lg lg:text-2xl bg-black border-2 border-purple-500 rounded-lg shadow-[0_0_15px_#a855f7] hover:shadow-[0_0_25px_#a855f7] hover:scale-110 active:scale-100 transition duration-300"
+              className="mt-4 px-10 py-4 text-white font-bold uppercase text-lg lg:text-2xl bg-black border-2 border-rose-500 rounded-lg shadow-[0_0_15px_#f43f5e] hover:shadow-[0_0_25px_#f43f5e] hover:scale-110 active:scale-100 transition duration-300"
               onClick={handleRestart}
             >
               Restart
             </button>
             <button
-              className="mt-4 px-10 py-4 text-white font-bold uppercase text-lg lg:text-2xl bg-black border-2 border-purple-500 rounded-lg shadow-[0_0_15px_#a855f7] hover:shadow-[0_0_25px_#a855f7] hover:scale-110 active:scale-100 transition duration-300"
+              className="mt-4 px-10 py-4 text-white font-bold uppercase text-lg lg:text-2xl bg-black border-2 border-pink-500 rounded-lg shadow-[0_0_15px_#ec4899] hover:shadow-[0_0_25px_#ec4899] hover:scale-110 active:scale-100 transition duration-300"
               onClick={handleGoToMainMenu}
             >
               Main Menu
             </button>
             <button
-              className="mt-4 px-10 py-4 text-white font-bold uppercase text-lg lg:text-2xl bg-black border-2 border-purple-500 rounded-lg shadow-[0_0_15px_#a855f7] hover:shadow-[0_0_25px_#a855f7] hover:scale-110 active:scale-100 transition duration-300"
+              className="mt-4 px-10 py-4 text-white font-bold uppercase text-lg lg:text-2xl bg-black border-2 border-purple-500 rounded-lg shadow-[0_0_15px_#c084fc] hover:shadow-[0_0_25px_#c084fc] hover:scale-110 active:scale-100 transition duration-300"
               onClick={handleQuit}
             >
               Quit
