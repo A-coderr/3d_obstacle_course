@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { pauseGame, resetGame, setPhase } from "../../store/gameSlice";
+import { useEffect } from "react";
 
 const PauseMenu = () => {
   const dispatch = useDispatch();
@@ -9,6 +10,13 @@ const PauseMenu = () => {
   const isGamePaused = useSelector(
     (state: RootState) => state.game.phase === "PAUSED"
   );
+
+  useEffect(() => {
+    //This useEffect is ensuring that when the game is paused, all the focus is removed from the active element.
+    if (isGamePaused && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  }, [isGamePaused]);
 
   if (!isGamePaused) return null;
 
