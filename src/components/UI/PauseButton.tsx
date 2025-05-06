@@ -1,11 +1,16 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { pauseGame } from "../../store/gameSlice";
+import { RootState } from "../../store/store";
 
 const PauseButton = () => {
   const dispatch = useDispatch();
 
+  const phase = useSelector((state: RootState) => state.game.phase);
+
   const togglePause = () => {
-    dispatch(pauseGame());
+    if (phase === "PLAYING" || phase === "PAUSED") {
+      dispatch(pauseGame());
+    }
   };
 
   return (

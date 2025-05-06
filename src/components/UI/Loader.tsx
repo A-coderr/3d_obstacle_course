@@ -1,24 +1,22 @@
 import { useProgress, Html } from "@react-three/drei";
 import { BeatLoader } from "react-spinners";
-import { setLoadingComplete } from "../../store/gameSlice";
-import { useDispatch } from "react-redux";
-import { useEffect } from "react";
-/**
- * Loader component serves as a loading indicator using
- * React Spinners and R3F's useProgress hook to display the loading progress.
- */
+import { setPhase } from "../../store/gameSlice";
+import { useEffect, useState } from "react";
+
 const Loader = () => {
   const { progress } = useProgress();
-  const dispatch = useDispatch();
+  const [hasTriggeredMainMenu, setHasTriggeredMainMenu] = useState(false);
 
   useEffect(() => {
-    if (progress === 100) {
-      dispatch(setLoadingComplete());
+    if (progress === 100 && !hasTriggeredMainMenu) {
+      console.log("Progress is complete");
+      setHasTriggeredMainMenu(true); // Add local state to avoid firing multiple times
+      setPhase("MAIN_MENU");
+      console.log("Dispatched MAIN_MENU phase");
     }
-  }, [progress, dispatch]);
+  }, [progress, hasTriggeredMainMenu]);
 
   return (
-    // Html is used to render DOM elements inside the 3D canvas to avoid R3F errors.
     <Html center style={{ width: "100vw", height: "100vh" }}>
       <div className="flex flex-col items-center justify-center h-screen w-full bg-[#000025]">
         <BeatLoader color="#ad46ff" speedMultiplier={0.5} size={60} />

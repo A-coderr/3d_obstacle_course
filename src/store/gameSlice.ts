@@ -1,22 +1,22 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+export type GamePhase =
+  | "LOADING"
+  | "MAIN_MENU"
+  | "PLAYING"
+  | "PAUSED"
+  | "GAME_OVER"
+  | "VICTORY";
+
 export interface GameState {
-  isLoading: boolean;
-  isGameStarted: boolean;
-  isGameFinished: boolean;
-  endReason: "win" | "lose" | null; // "win" | "lose" | null
-  isGamePaused: boolean;
+  phase: GamePhase;
   time: number;
   collected: string[];
   score: number;
 }
 
 const initialState: GameState = {
-  isLoading: true,
-  isGameStarted: false,
-  isGameFinished: false,
-  endReason: null,
-  isGamePaused: false,
+  phase: "LOADING",
   time: 0,
   collected: [],
   score: 0,
@@ -26,58 +26,52 @@ const gameSlice = createSlice({
   name: "game",
   initialState,
   reducers: {
-    setLoadingComplete: (state) => {
-      state.isLoading = false;
+    setPhase(state, action: PayloadAction<GamePhase>) {
+      state.phase = action.payload;
     },
-    startGame: (state) => {
-      state.isGameStarted = true;
-      state.isGameFinished = false;
-      state.isGamePaused = false;
-      state.endReason = null;
-    },
-    endGame: (state, action: PayloadAction<"win" | "lose">) => {
-      state.isGameStarted = false;
-      state.isGameFinished = true;
-      state.isGamePaused = false;
-      state.endReason = action.payload;
-    },
-    startTimer(state) {
-      state.time = 0; // Reset time when the game starts
-    },
-    incrementTime(state) {
-      state.time += 1; // Increment time by 1 second
-    },
-    resetTimer(state) {
-      state.time = 0; // Reset time when game ends
+    startGame(state) {
+      state.phase = "PLAYING";
+      state.time = 0;
+      state.collected = [];
+      state.score = 0;
     },
     pauseGame(state) {
-      state.isGamePaused = !state.isGamePaused; // Toggle pause state
+      if (state.phase === "PLAYING") {
+        state.phase = "PAUSED";
+      } else if (state.phase === "PAUSED") {
+        state.phase = "PLAYING";
+      }
     },
-    collectItem: (state, action: PayloadAction<string>) => {
+    endGame(state, action: PayloadAction<"win" | "lose">) {
+      state.phase = action.payload === "win" ? "VICTORY" : "GAME_OVER";
+    },
+    incrementTime(state) {
+      if (state.phase === "PLAYING") {
+        state.time += 1;
+      }
+    },
+    collectItem(state, action: PayloadAction<string>) {
       if (!state.collected.includes(action.payload)) {
         state.collected.push(action.payload);
         state.score += 100;
       }
     },
-    resetCollectibles: (state) => {
+    resetGame(state) {
+      state.phase = "MAIN_MENU";
+      state.time = 0;
       state.collected = [];
-    },
-    resetScore: (state) => {
       state.score = 0;
     },
   },
 });
 
 export const {
-  setLoadingComplete,
+  setPhase,
   startGame,
-  endGame,
-  startTimer,
-  incrementTime,
-  resetTimer,
   pauseGame,
+  endGame,
+  incrementTime,
   collectItem,
-  resetCollectibles,
-  resetScore,
+  resetGame,
 } = gameSlice.actions;
 export default gameSlice.reducer;

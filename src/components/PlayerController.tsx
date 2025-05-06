@@ -12,9 +12,7 @@ import Player from "./Player";
 import { RootState } from "../store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { CameraController } from "./CameraController";
-import { endGame } from "../store/gameSlice";
-import EndGameScreen from "./UI/EndGameScreen";
-import FinishScreen from "./UI/FinishScreen";
+import { setPhase } from "../store/gameSlice";
 
 /**
  * A player controller component that manages player movement and rotation.
@@ -25,17 +23,12 @@ import FinishScreen from "./UI/FinishScreen";
  * @returns {React.Element} A RigidBody component with a CapsuleCollider and a Player component
  */
 const PlayerController: React.FC = () => {
-  const isGameStarted = useSelector(
-    (state: RootState) => state.game.isGameStarted
-  );
-  const isGameFinished = useSelector(
-    (state: RootState) => state.game.isGameFinished
-  );
-  const isGamePaused = useSelector(
-    (state: RootState) => state.game.isGamePaused
-  );
-  const endReason = useSelector((state: RootState) => state.game.endReason);
+  const phase = useSelector((state: RootState) => state.game.phase);
   const dispatch = useDispatch();
+  const isPlaying = phase === "PLAYING";
+  const isPaused = phase === "PAUSED";
+  const isGameOver = phase === "GAME_OVER";
+  const isVictory = phase === "VICTORY";
   const rigidBodyRef = useRef<React.ElementRef<typeof RigidBody>>(null);
   const [isWalking, setIsWalking] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
@@ -60,7 +53,7 @@ const PlayerController: React.FC = () => {
   });
 
   useEffect(() => {
-    if (!isGameStarted || isGamePaused) return;
+    if (!isPlaying) return;
     /**
      * ✅Handles keydown events. Sets the corresponding key in the keys ref to true.
      * @param {KeyboardEvent} event - The keydown event.
@@ -92,10 +85,10 @@ const PlayerController: React.FC = () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [isGameStarted, isGamePaused]);
+  }, [isPlaying]);
 
   useEffect(() => {
-    if (isGamePaused || isGameFinished) {
+    if (!isPlaying || isPaused || isGameOver || isVictory) {
       keys.current = {
         w: false,
         a: false,
@@ -110,7 +103,7 @@ const PlayerController: React.FC = () => {
       setIsTurningLeft(false);
       setIsTurningRight(false);
     }
-  }, [isGamePaused, isGameFinished]);
+  }, [isPlaying, isPaused, isGameOver, isVictory]);
 
   /**
    * ✅Handles collision enter events for the player.
@@ -133,7 +126,7 @@ const PlayerController: React.FC = () => {
     }
     // ✅ Finish platform detection
     if (otherObjectName === "finish") {
-      dispatch(endGame("win"));
+      dispatch(setPhase("VICTORY"));
     }
   };
 
@@ -147,7 +140,7 @@ const PlayerController: React.FC = () => {
   };
 
   useFrame(() => {
-    if (!rigidBodyRef.current || isGameFinished) return;
+    if (!rigidBodyRef.current || !isPlaying) return;
 
     //Checking pressed keys inside useFrame to prevent race conditions.
     const walking = keys.current.w;
@@ -204,16 +197,9 @@ const PlayerController: React.FC = () => {
     //Checks if the player falls below the ground level.
     const playerPosition = rigidBodyRef.current.translation();
     if (playerPosition.y < -10) {
-      dispatch(endGame("lose")); //Dispatch the action to end the game.
+      dispatch(setPhase("GAME_OVER")); //Dispatch the action to end the game.
     }
   });
-
-  if (isGameFinished) {
-    if (endReason === "win") {
-      return <FinishScreen />; // Create this component
-    }
-    return <EndGameScreen />; // Keep your existing "lose" screen
-  }
 
   return (
     <>
