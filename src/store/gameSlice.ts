@@ -13,6 +13,7 @@ export interface GameState {
   time: number;
   collected: string[];
   score: number;
+  resetCount: number;
 }
 
 const initialState: GameState = {
@@ -20,6 +21,7 @@ const initialState: GameState = {
   time: 0,
   collected: [],
   score: 0,
+  resetCount: 0,
 };
 
 const gameSlice = createSlice({
@@ -57,10 +59,10 @@ const gameSlice = createSlice({
       }
     },
     resetGame(state) {
-      state.phase = "MAIN_MENU";
       state.time = 0;
       state.collected = [];
       state.score = 0;
+      state.resetCount += 1;
     },
   },
 });
