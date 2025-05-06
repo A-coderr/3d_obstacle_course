@@ -59,10 +59,23 @@ const PlayerController: React.FC = () => {
      * @param {KeyboardEvent} event - The keydown event.
      */
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === " ") {
-        keys.current.space = true;
-      } else {
-        keys.current[event.key.toLowerCase()] = true;
+      switch (event.code) {
+        case "KeyW":
+          keys.current.w = true;
+          break;
+        case "KeyA":
+          keys.current.a = true;
+          break;
+        case "KeyD":
+          keys.current.d = true;
+          break;
+        case "ShiftLeft":
+        case "ShiftRight":
+          keys.current.shift = true;
+          break;
+        case "Space":
+          keys.current.space = true;
+          break;
       }
     };
 
@@ -71,10 +84,23 @@ const PlayerController: React.FC = () => {
      * @param {KeyboardEvent} event - The keyup event.
      */
     const handleKeyUp = (event: KeyboardEvent) => {
-      if (event.key === " ") {
-        keys.current.space = false;
-      } else {
-        keys.current[event.key.toLowerCase()] = false;
+      switch (event.code) {
+        case "KeyW":
+          keys.current.w = false;
+          break;
+        case "KeyA":
+          keys.current.a = false;
+          break;
+        case "KeyD":
+          keys.current.d = false;
+          break;
+        case "ShiftLeft":
+        case "ShiftRight":
+          keys.current.shift = false;
+          break;
+        case "Space":
+          keys.current.space = false;
+          break;
       }
     };
 
