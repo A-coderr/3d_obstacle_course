@@ -14,20 +14,12 @@ import { incrementTime } from "../../store/gameSlice";
 const GameTimer = () => {
   const dispatch = useDispatch();
   const time = useSelector((state: RootState) => state.game.time);
-  const isGameStarted = useSelector(
-    (state: RootState) => state.game.isGameStarted
-  );
-  const isGameFinished = useSelector(
-    (state: RootState) => state.game.isGameFinished
-  );
-  const isGamePaused = useSelector(
-    (state: RootState) => state.game.isGamePaused
-  );
+  const phase = useSelector((state: RootState) => state.game.phase);
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | undefined;
 
-    if (isGameStarted && !isGameFinished && !isGamePaused) {
+    if (phase === "PLAYING") {
       //Starts timer when game starts.
       interval = setInterval(() => {
         dispatch(incrementTime()); //Increments time every second.
@@ -39,7 +31,7 @@ const GameTimer = () => {
     return () => {
       if (interval) clearInterval(interval); //Cleans up the interval when the component unmounts.
     };
-  }, [isGameStarted, isGameFinished, isGamePaused, dispatch]);
+  }, [phase, dispatch]);
 
   const minutes = Math.floor(time / 60);
   const seconds = time % 60;

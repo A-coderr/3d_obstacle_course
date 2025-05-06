@@ -1,19 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import {
-  pauseGame,
-  startGame,
-  resetTimer,
-  resetCollectibles,
-  resetScore,
-} from "../../store/gameSlice";
+import { pauseGame, resetGame, setPhase } from "../../store/gameSlice";
 
 const PauseMenu = () => {
   const dispatch = useDispatch();
   const buttonStyles =
     "px-8 py-4 text-xl font-bold uppercase text-white border-2 border-[#00a2ff] bg-black rounded-lg shadow-[0_0_15px_#00a2ff] transition-all duration-300 hover:shadow-[0_0_25px_#00a2ff] hover:scale-110 active:scale-100";
   const isGamePaused = useSelector(
-    (state: RootState) => state.game.isGamePaused
+    (state: RootState) => state.game.phase === "PAUSED"
   );
 
   if (!isGamePaused) return null;
@@ -23,14 +17,12 @@ const PauseMenu = () => {
   };
 
   const handleRestart = () => {
-    dispatch(resetTimer());
-    dispatch(resetCollectibles());
-    dispatch(resetScore());
-    dispatch(startGame());
+    dispatch(resetGame());
+    dispatch(setPhase("PLAYING"));
   };
 
   const handleQuit = () => {
-    console.log("Quitting the game...");
+    window.close();
   };
 
   return (
