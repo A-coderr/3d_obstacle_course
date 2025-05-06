@@ -21,6 +21,7 @@ const HDR_PATH = new URL("./assets/sky.hdr", import.meta.url).href;
 
 function App() {
   const phase = useSelector((state: RootState) => state.game.phase);
+  const resetCount = useSelector((state: RootState) => state.game.resetCount);
   console.log("App phase:", phase); // Log the current phase
 
   const isPlaying = phase === "PLAYING";
@@ -56,7 +57,7 @@ function App() {
             {/* <Perf position="top-left" /> */}
             <Environment files={HDR_PATH} background />
             <Physics>
-              <Experience />
+              <Experience key={resetCount} />
             </Physics>
           </Suspense>
         </Canvas>
