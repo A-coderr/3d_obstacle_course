@@ -55,7 +55,7 @@ const PlayerController: React.FC = () => {
   useEffect(() => {
     if (!isPlaying) return;
     /**
-     * ✅Handles keydown events. Sets the corresponding key in the keys ref to true.
+     * Handles keydown events. Sets the corresponding key in the keys ref to true.
      * @param {KeyboardEvent} event - The keydown event.
      */
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -80,7 +80,7 @@ const PlayerController: React.FC = () => {
     };
 
     /**
-     * ✅Handles keyup events. Sets the corresponding key in the keys ref to false.
+     * Handles keyup events. Sets the corresponding key in the keys ref to false.
      * @param {KeyboardEvent} event - The keyup event.
      */
     const handleKeyUp = (event: KeyboardEvent) => {
@@ -132,7 +132,7 @@ const PlayerController: React.FC = () => {
   }, [isPlaying, isPaused, isGameOver, isVictory]);
 
   /**
-   * ✅Handles collision enter events for the player.
+   * Handles collision enter events for the player.
    * This function is triggered when the player's collider enters
    * into contact with another collider. If the other object is the
    * ground, it sets the player's state to grounded and not jumping.
@@ -150,7 +150,7 @@ const PlayerController: React.FC = () => {
         setIsJumping(false);
       }
     }
-    // ✅ Finish platform detection
+    //Finish platform detection
     if (otherObjectName === "finish") {
       dispatch(setPhase("VICTORY"));
     }

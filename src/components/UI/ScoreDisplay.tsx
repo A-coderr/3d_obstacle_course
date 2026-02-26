@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../../store/store"; // Adjust path as needed
+import { RootState } from "../../store/store";
 
 const ScoreDisplay: React.FC = () => {
   const score = useSelector((state: RootState) => state.game.score);

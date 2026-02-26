@@ -10,7 +10,7 @@ const Loader = () => {
   useEffect(() => {
     if (progress === 100 && !hasTriggeredMainMenu) {
       console.log("Progress is complete");
-      setHasTriggeredMainMenu(true); // Add local state to avoid firing multiple times
+      setHasTriggeredMainMenu(true);
       setPhase("MAIN_MENU");
       console.log("Dispatched MAIN_MENU phase");
     }

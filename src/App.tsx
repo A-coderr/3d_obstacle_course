@@ -22,7 +22,7 @@ const HDR_PATH = new URL("./assets/sky.hdr", import.meta.url).href;
 function App() {
   const phase = useSelector((state: RootState) => state.game.phase);
   const resetCount = useSelector((state: RootState) => state.game.resetCount);
-  console.log("App phase:", phase); // Log the current phase
+  console.log("App phase:", phase); //Log the current phase
 
   const isPlaying = phase === "PLAYING";
   const isPaused = phase === "PAUSED";
