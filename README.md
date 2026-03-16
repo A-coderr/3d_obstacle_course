@@ -25,6 +25,11 @@ This is a 3D obstacle course game called ThreeRun built with React Three Fiber, 
 - [Redux](https://redux.js.org/) (Global State Management)
 
 
+
+## 📚 Learning Mode Vision
+
+A detailed product analysis and implementation roadmap for turning ThreeRun into a learning-focused obstacle course is available here: [LEARNING_GAME_ROADMAP.md](LEARNING_GAME_ROADMAP.md).
+
 ## 🔮Next Steps
 
 - Implement level completion mechanics
