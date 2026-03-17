@@ -163,8 +163,11 @@ const Player: React.FC<PlayerProps> = ({
   const phase = useSelector((state: RootState) => state.game.phase);
 
   useFrame((_, delta) => {
-    if (phase === "PLAYING") {
-      mixerRef.current?.update(delta);
+    if (
+      (phase === "PLAYING" || phase === "GAME_OVER" || phase === "VICTORY") &&
+      mixerRef.current
+    ) {
+      mixerRef.current.update(delta);
     }
   });
 

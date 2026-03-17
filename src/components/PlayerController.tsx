@@ -166,7 +166,22 @@ const PlayerController: React.FC = () => {
   };
 
   useFrame(() => {
-    if (!rigidBodyRef.current || !isPlaying) return;
+    if (!rigidBodyRef.current) return;
+
+    // Freeze physics when paused or game ends
+    if (isPaused || isGameOver || isVictory) {
+      rigidBodyRef.current.setLinvel(vec3({ x: 0, y: 0, z: 0 }), true);
+      rigidBodyRef.current.setAngvel(vec3({ x: 0, y: 0, z: 0 }), true);
+      rigidBodyRef.current.setGravityScale(0, true);
+      return;
+    }
+
+    // Restore gravity when resuming play
+    if (isPlaying) {
+      rigidBodyRef.current.setGravityScale(2, true);
+    }
+
+    if (!isPlaying) return;
 
     //Checking pressed keys inside useFrame to prevent race conditions.
     const walking = keys.current.w;
