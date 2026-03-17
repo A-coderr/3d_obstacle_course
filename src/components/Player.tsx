@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
+import { useSelector } from "react-redux";
 import {
   AnimationMixer,
   Group,
@@ -9,6 +10,7 @@ import {
   AnimationUtils,
 } from "three";
 import * as THREE from "three";
+import { RootState } from "../store/store";
 
 interface PlayerProps {
   isWalking: boolean;
@@ -158,8 +160,12 @@ const Player: React.FC<PlayerProps> = ({
     }
   }, [isWalking, isRunning, isJumping, isTurningLeft, isTurningRight]);
 
+  const phase = useSelector((state: RootState) => state.game.phase);
+
   useFrame((_, delta) => {
-    mixerRef.current?.update(delta);
+    if (phase === "PLAYING") {
+      mixerRef.current?.update(delta);
+    }
   });
 
   return <primitive object={scene} scale={1} position={[0, -1, 0]} />;

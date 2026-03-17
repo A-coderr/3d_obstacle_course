@@ -24,9 +24,10 @@ const Collectible: React.FC<CollectibleProps> = ({ id, position }) => {
   const isCollected = useSelector((state: RootState) =>
     state.game.collected.includes(id)
   );
+  const phase = useSelector((state: RootState) => state.game.phase);
 
   useFrame((_, delta) => {
-    if (ref.current) {
+    if (ref.current && phase === "PLAYING") {
       ref.current.rotation.y += delta; //Rotates for visual effect.
     }
   });
