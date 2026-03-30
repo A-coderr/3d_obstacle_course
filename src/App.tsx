@@ -2,24 +2,26 @@ import { Canvas } from "@react-three/fiber";
 import Experience from "./components/Experience";
 
 import "./App.css";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import Loader from "./components/UI/Loader";
 import { Physics } from "@react-three/rapier";
 import { Environment } from "@react-three/drei";
 import StartScreen from "./components/UI/StartScreen";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./store/store";
 import GameTimer from "./components/UI/GameTimer";
-import PauseButton from "./components/UI/PauseButton";
 import PauseScreen from "./components/UI/PauseScreen";
 import ScoreDisplay from "./components/UI/ScoreDisplay";
 import EndGameScreen from "./components/UI/EndGameScreen";
 import FinishScreen from "./components/UI/FinishScreen";
 import OnAssetsLoaded from "./components/UI/OnAssetLoaded";
+import TaskGraph from "./components/UI/TaskGraph";
+import { pauseGame } from "./store/gameSlice";
 
 const HDR_PATH = new URL("./assets/sky.hdr", import.meta.url).href;
 
 function App() {
+  const dispatch = useDispatch();
   const phase = useSelector((state: RootState) => state.game.phase);
   const resetCount = useSelector((state: RootState) => state.game.resetCount);
   console.log("App phase:", phase); //Log the current phase
@@ -31,6 +33,20 @@ function App() {
   const isVictory = phase === "VICTORY";
   const isLoading = phase === "LOADING";
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.code === "Escape" && (phase === "PLAYING" || phase === "PAUSED")) {
+        dispatch(pauseGame());
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [dispatch, phase]);
+
   return (
     <>
       {isInMenu && <StartScreen />}
@@ -40,8 +56,8 @@ function App() {
 
       {(isPlaying || isPaused) && (
         <>
+          <TaskGraph />
           <GameTimer />
-          <PauseButton />
           <ScoreDisplay />
         </>
       )}

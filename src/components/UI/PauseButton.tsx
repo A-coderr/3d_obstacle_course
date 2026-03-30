@@ -16,10 +16,9 @@ const PauseButton = () => {
   return (
     <button
       onClick={togglePause}
-      className="absolute z-10 top-5 right-5 px-5 py-3 text-[#00a2ff] font-bold text-2xl border-4 border-[#00a2ff] 
-                 rounded-full bg-black shadow-[0_0_15px_#00a2ff] transition-all duration-300 
-                 hover:shadow-[0_0_25px_#00a2ff] hover:scale-110 active:scale-100 select-none"
+      className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/70 bg-black/80 text-xl font-bold text-white shadow-[0_0_18px_rgba(255,255,255,0.2)] backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:border-white hover:shadow-[0_0_24px_rgba(255,255,255,0.3)] active:scale-100 select-none"
       tabIndex={-1}
+      aria-label="Pause game"
     >
       II
     </button>

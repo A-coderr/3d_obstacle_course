@@ -12,7 +12,7 @@ import Player from "./Player";
 import { RootState } from "../store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { CameraController } from "./CameraController";
-import { setPhase } from "../store/gameSlice";
+import { completeTask, setPhase } from "../store/gameSlice";
 
 /**
  * A player controller component that manages player movement and rotation.
@@ -24,6 +24,7 @@ import { setPhase } from "../store/gameSlice";
  */
 const PlayerController: React.FC = () => {
   const phase = useSelector((state: RootState) => state.game.phase);
+  const levelTasks = useSelector((state: RootState) => state.game.levelTasks);
   const dispatch = useDispatch();
   const isPlaying = phase === "PLAYING";
   const isPaused = phase === "PAUSED";
@@ -38,6 +39,22 @@ const PlayerController: React.FC = () => {
   const [isTurningRight, setIsTurningRight] = useState(false);
   const [rotationY, setRotationY] = useState(0);
   const [canJump, setCanJump] = useState(true);
+  const previousRotationYRef = useRef(0);
+  const movementTaskIds = ["move-forward", "turn-left", "turn-right"];
+  const currentMovementTask = movementTaskIds
+    .map((taskId) => levelTasks.find((task) => task.id === taskId))
+    .find((task) => task && !task.completed);
+  const crystalTask = levelTasks.find((task) => task.id === "collect-crystals");
+  const finishTask = levelTasks.find((task) => task.id === "reach-finish");
+  const areMovementTasksComplete = movementTaskIds.every((taskId) =>
+    levelTasks.some((task) => task.id === taskId && task.completed)
+  );
+  const isCrystalTaskComplete = Boolean(crystalTask?.completed);
+  const isFinishTaskActive =
+    Boolean(finishTask) &&
+    !finishTask?.completed &&
+    areMovementTasksComplete &&
+    isCrystalTaskComplete;
 
   const walkSpeed = 2;
   const runSpeed = 5;
@@ -151,7 +168,8 @@ const PlayerController: React.FC = () => {
       }
     }
     //Finish platform detection
-    if (otherObjectName === "finish") {
+    if (otherObjectName === "finish" && isFinishTaskActive) {
+      dispatch(completeTask("reach-finish"));
       dispatch(setPhase("VICTORY"));
     }
   };
@@ -189,6 +207,9 @@ const PlayerController: React.FC = () => {
     const jumpPressed = keys.current.space;
     const turningLeft = keys.current.a;
     const turningRight = keys.current.d;
+    const isMoveForwardTaskActive = currentMovementTask?.id === "move-forward";
+    const isTurnLeftTaskActive = currentMovementTask?.id === "turn-left";
+    const isTurnRightTaskActive = currentMovementTask?.id === "turn-right";
 
     setIsWalking(walking);
     setIsRunning(running);
@@ -219,6 +240,9 @@ const PlayerController: React.FC = () => {
 
     const movementSpeed = isRunning ? runSpeed : walkSpeed;
     const velocity = rigidBodyRef.current.linvel();
+    const movedForward = walking && Math.abs(velocity.z) > 0.1;
+    const rotatedLeft = turningLeft && rotationY > previousRotationYRef.current;
+    const rotatedRight = turningRight && rotationY < previousRotationYRef.current;
 
     if (isJumping && !isWalking) {
       rigidBodyRef.current.setLinvel(
@@ -240,6 +264,18 @@ const PlayerController: React.FC = () => {
     if (playerPosition.y < -10) {
       dispatch(setPhase("GAME_OVER")); //Dispatch the action to end the game.
     }
+
+    if (isMoveForwardTaskActive && movedForward) {
+      dispatch(completeTask("move-forward"));
+    }
+    if (isTurnLeftTaskActive && rotatedLeft) {
+      dispatch(completeTask("turn-left"));
+    }
+    if (isTurnRightTaskActive && rotatedRight) {
+      dispatch(completeTask("turn-right"));
+    }
+
+    previousRotationYRef.current = rotationY;
   });
 
   return (

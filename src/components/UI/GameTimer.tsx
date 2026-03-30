@@ -40,8 +40,11 @@ const GameTimer = () => {
   ).padStart(2, "0")}`;
 
   return (
-    <div className="absolute top-5 left-1/2 -translate-x-1/2 bg-black/70 text-white text-xl font-bold px-5 py-2 rounded-lg z-10 border-3 border-[#ad46ff] select-none">
-      ⏱ Time {formattedTime}
+    <div className="absolute left-1/2 top-5 z-10 min-w-32 -translate-x-1/2 rounded-xl border border-fuchsia-400/80 bg-black/70 px-4 py-2 text-center text-white shadow-[0_0_16px_#d946ef40] backdrop-blur-sm select-none">
+      <p className="text-[9px] uppercase tracking-[0.24em] text-fuchsia-300/90">
+        Time
+      </p>
+      <p className="mt-1 text-xl font-bold tabular-nums">{formattedTime}</p>
     </div>
   );
 };
